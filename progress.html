@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tiến độ CARLA Bootcamp</title>
+<meta name="description" content="Checkpoint kiến thức, cấp độ đạt và bằng chứng trực quan của quá trình học CARLA / Autoware.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css">
+<link rel="stylesheet" href="assets/style.css?v=1">
+<link rel="stylesheet" href="assets/progress.css?v=1">
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+} }
+</script>
+</head>
+<body>
+<header class="topbar">
+  <div class="inner">
+    <a class="brand" href="index.html">CARLA <span>Bootcamp</span></a>
+    <nav class="tabs-mini">
+      <a href="index.html">Bài học</a>
+      <a href="progress.html" aria-current="page">Tiến độ</a>
+    </nav>
+    <div class="spacer"></div>
+    <button class="btn" id="btnDemo" aria-pressed="false" title="Xem dữ liệu mẫu để biết bằng chứng nên trông thế nào">Xem mẫu</button>
+    <button class="btn" id="btnPresent" aria-pressed="false">Chế độ trình bày</button>
+    <button class="btn" id="btnPrint">In / PDF</button>
+    <button class="btn" id="btnTheme" title="Đổi giao diện sáng/tối">◐</button>
+  </div>
+</header>
+
+<div class="banner demo-banner" id="demoBanner" hidden>
+  Đang xem <b>DỮ LIỆU MẪU</b>: dữ liệu mô phỏng tổng hợp để minh họa cách trình bày bằng chứng. <button class="btn small" id="btnDemoOff">Về tiến độ thật</button>
+</div>
+<div class="banner draft-banner" id="draftBanner" hidden>
+  Có <b id="draftCount">0</b> thay đổi chưa đưa vào Git (đang lưu tạm trong trình duyệt).
+  <button class="btn small primary" id="btnDownload">Tải progress.json</button>
+  <button class="btn small" id="btnDiscard">Bỏ thay đổi</button>
+</div>
+
+<main class="wrap">
+  <section class="hero">
+    <div>
+      <h1 id="title">Tiến độ học tập</h1>
+      <p class="muted" id="subtitle">Đang tải…</p>
+    </div>
+    <div class="legend" aria-label="Chú giải cấp độ">
+      <span class="lv lv0">Chưa</span>
+      <span class="lv lv1">① Hiểu</span>
+      <span class="lv lv2">② Làm được</span>
+      <span class="lv lv3">③ Tự làm</span>
+      <span class="chip mentor-chip">✔ Mentor xác nhận</span>
+    </div>
+  </section>
+
+  <section class="tracks" id="tracks" aria-label="Tiến độ theo mảng"></section>
+
+  <section class="card panel" id="gridPanel">
+    <div class="panel-head">
+      <h2>Bản đồ kỹ năng</h2>
+      <span class="muted small-note">Mỗi ô = 1 checkpoint · bấm để xem chi tiết</span>
+    </div>
+    <div id="skillGrid" class="skill-grid"></div>
+  </section>
+
+  <section class="card panel" id="timelinePanel">
+    <div class="panel-head"><h2>Dòng thời gian</h2><span class="muted small-note">Checkpoint đạt được theo ngày</span></div>
+    <div id="timeline" class="timeline"></div>
+  </section>
+
+  <section class="filters" id="filters">
+    <input id="q" type="search" placeholder="Tìm checkpoint (mã, kỹ năng)…" aria-label="Tìm">
+    <select id="fTrack" aria-label="Lọc mảng"><option value="">Tất cả mảng</option></select>
+    <select id="fLevel" aria-label="Lọc cấp độ">
+      <option value="">Mọi cấp độ</option>
+      <option value="0">Chưa làm</option>
+      <option value="1">① Hiểu</option>
+      <option value="2">② Làm được</option>
+      <option value="3">③ Tự làm</option>
+      <option value="ev">Có bằng chứng</option>
+      <option value="req">Bắt buộc còn thiếu</option>
+    </select>
+    <span class="muted" id="countNote"></span>
+  </section>
+
+  <section id="cards" class="cards"></section>
+</main>
+
+<dialog id="editDlg">
+  <form method="dialog" id="editForm">
+    <div class="dlg-head">
+      <h3 id="editTitle">Cập nhật</h3>
+      <button class="btn small" value="cancel" formnovalidate>✕</button>
+    </div>
+    <div class="dlg-body">
+      <p id="editSkill" class="muted"></p>
+      <label>Cấp độ đạt</label>
+      <div class="lv-pick" id="lvPick"></div>
+      <label for="eDate">Ngày đạt</label>
+      <input type="date" id="eDate">
+      <label for="eNotes">Đã vướng gì / sửa thế nào</label>
+      <textarea id="eNotes" placeholder="Ví dụ: lỗi Vulkan trong container do thiếu capability graphics → thêm NVIDIA_DRIVER_CAPABILITIES=all"></textarea>
+      <label>Bằng chứng <span class="muted">(đường dẫn tương đối trong repo, vd. evidence/B-03/Dockerfile)</span></label>
+      <div id="evList"></div>
+      <button type="button" class="btn small" id="evAdd">+ Thêm bằng chứng</button>
+      <details class="mentor-box">
+        <summary>Mentor xác nhận</summary>
+        <label><input type="checkbox" id="mOk" style="width:auto"> Đã xác nhận</label>
+        <label for="mBy">Người xác nhận</label><input id="mBy">
+        <label for="mComment">Nhận xét</label><input id="mComment">
+      </details>
+    </div>
+    <div class="dlg-foot">
+      <span class="muted small-note">Lưu tạm trong trình duyệt → bấm “Tải progress.json” rồi commit.</span>
+      <button class="btn" value="cancel" formnovalidate>Hủy</button>
+      <button class="btn primary" value="save" id="editSave">Lưu</button>
+    </div>
+  </form>
+</dialog>
+
+<dialog id="lightbox" class="lightbox"><img alt=""><button class="btn small" id="lbClose">Đóng</button></dialog>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="assets/viewers.js?v=1"></script>
+<script src="assets/progress.js?v=1"></script>
+</body>
+</html>

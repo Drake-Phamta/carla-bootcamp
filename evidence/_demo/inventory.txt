@@ -1,0 +1,17 @@
+=== DEMO — kiểm kê server (đã che hostname/IP/user) ===
+$ lsb_release -ds
+Ubuntu 22.04.4 LTS
+$ nvidia-smi --query-gpu=name,driver_version,memory.total --format=csv,noheader
+NVIDIA GeForce RTX 4090, 550.xx, 24564 MiB
+$ nproc && free -h | head -2
+32
+              total        used        free
+Mem:           125Gi        9.1Gi       108Gi
+$ df -h /home | tail -1
+/dev/nvme0n1p2  1.8T  1.1T  612G  65% /home
+$ groups
+<user> docker
+$ docker info --format '{{.ServerVersion}} {{.Runtimes}}'
+27.x map[io.containerd.runc.v2:{...} nvidia:{...} runc:{...}]
+
+KẾT LUẬN: đủ ổ (612 GB trống > 200 GB), có nhóm docker + runtime nvidia, GPU đang rảnh.

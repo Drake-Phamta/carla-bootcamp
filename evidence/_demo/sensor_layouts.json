@@ -1,0 +1,150 @@
+{
+ "vehicle": {
+  "length": 4.6,
+  "width": 1.9,
+  "name": "Ego (Lincoln MKZ ~ 4.6 x 1.9 m)"
+ },
+ "range_m": 12,
+ "layouts": [
+  {
+   "name": "Layout A — 1 LiDAR nóc + 3 camera trước",
+   "sensors": [
+    {
+     "name": "LiDAR nóc",
+     "type": "lidar",
+     "x": 0.0,
+     "y": 0.0,
+     "z": 2.0,
+     "yaw": 0,
+     "fov": 360,
+     "range": 80,
+     "lower_fov": -30
+    },
+    {
+     "name": "Cam trước",
+     "type": "camera",
+     "x": 0.8,
+     "y": 0.0,
+     "z": 1.6,
+     "yaw": 0,
+     "fov": 90,
+     "range": 60
+    },
+    {
+     "name": "Cam trước-trái",
+     "type": "camera",
+     "x": 0.7,
+     "y": -0.8,
+     "z": 1.5,
+     "yaw": -60,
+     "fov": 70,
+     "range": 40
+    },
+    {
+     "name": "Cam trước-phải",
+     "type": "camera",
+     "x": 0.7,
+     "y": 0.8,
+     "z": 1.5,
+     "yaw": 60,
+     "fov": 70,
+     "range": 40
+    }
+   ]
+  },
+  {
+   "name": "Layout B — LiDAR nóc + cam trước + 4 fisheye surround + 2 radar",
+   "sensors": [
+    {
+     "name": "LiDAR nóc",
+     "type": "lidar",
+     "x": 0.0,
+     "y": 0.0,
+     "z": 2.0,
+     "yaw": 0,
+     "fov": 360,
+     "range": 80,
+     "lower_fov": -30
+    },
+    {
+     "name": "Cam trước",
+     "type": "camera",
+     "x": 0.8,
+     "y": 0,
+     "z": 1.6,
+     "yaw": 0,
+     "fov": 90,
+     "range": 60
+    },
+    {
+     "name": "Fisheye F",
+     "type": "camera",
+     "x": 2.35,
+     "y": 0,
+     "z": 0.6,
+     "yaw": 0,
+     "fov": 180,
+     "vfov": 120,
+     "pitch": -30,
+     "range": 10
+    },
+    {
+     "name": "Fisheye B",
+     "type": "camera",
+     "x": -2.35,
+     "y": 0,
+     "z": 0.9,
+     "yaw": 180,
+     "fov": 180,
+     "vfov": 120,
+     "pitch": -30,
+     "range": 10
+    },
+    {
+     "name": "Fisheye L (gương)",
+     "type": "camera",
+     "x": 0.9,
+     "y": -1.0,
+     "z": 1.0,
+     "yaw": -90,
+     "fov": 180,
+     "vfov": 120,
+     "pitch": -40,
+     "range": 10
+    },
+    {
+     "name": "Fisheye R (gương)",
+     "type": "camera",
+     "x": 0.9,
+     "y": 1.0,
+     "z": 1.0,
+     "yaw": 90,
+     "fov": 180,
+     "vfov": 120,
+     "pitch": -40,
+     "range": 10
+    },
+    {
+     "name": "Radar F",
+     "type": "radar",
+     "x": 2.3,
+     "y": 0,
+     "z": 0.5,
+     "yaw": 0,
+     "fov": 30,
+     "range": 100
+    },
+    {
+     "name": "Radar B",
+     "type": "radar",
+     "x": -2.3,
+     "y": 0,
+     "z": 0.5,
+     "yaw": 180,
+     "fov": 30,
+     "range": 100
+    }
+   ]
+  }
+ ]
+}

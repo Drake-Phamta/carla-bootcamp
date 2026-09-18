@@ -1,0 +1,9 @@
+class,count
+car,18432
+truck,2210
+bus,640
+pedestrian,5120
+cyclist,880
+motorcycle,1950
+traffic_light,3105
+traffic_sign,2760

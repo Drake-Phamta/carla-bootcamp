@@ -1,0 +1,18 @@
+# bí mật & file cá nhân
+*.pem
+*.key
+id_*
+*.ovpn
+user.txt
+*.pdf
+.env
+
+# dữ liệu lớn / tạm
+*.bin
+*.pcd
+*.npy
+*.tar.gz
+*.zip
+__pycache__/
+.DS_Store
+Thumbs.db

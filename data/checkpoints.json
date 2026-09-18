@@ -1,0 +1,571 @@
+{
+  "version": 1,
+  "levels": [
+    { "lv": 0, "name": "Chưa làm", "desc": "Chưa bắt đầu" },
+    { "lv": 1, "name": "① Hiểu", "desc": "Giải thích được bằng lời của mình, trả lời được câu hỏi kiểm tra" },
+    { "lv": 2, "name": "② Làm được", "desc": "Làm ra kết quả khi có tài liệu/hướng dẫn bên cạnh" },
+    { "lv": 3, "name": "③ Tự làm", "desc": "Làm lại từ đầu không cần nhìn tài liệu và tự sửa được lỗi" }
+  ],
+  "tracks": [
+    { "id": "F", "name": "Nền tảng", "desc": "Linux · Build từ source · Docker tự xây · CARLA core" },
+    { "id": "T1", "name": "Task 1 · Sensor & Data", "desc": "Đặt sensor, calib, thu data đạt chuẩn" },
+    { "id": "T2", "name": "Task 2 · Autoware", "desc": "ROS 2 + tích hợp self-driving stack" },
+    { "id": "T3", "name": "Task 3 · Scenario", "desc": "Map từ GPS/OSM, asset Blender, replay scenario" }
+  ],
+  "modules": [
+    { "id": "D0", "track": "F", "name": "Truy cập & Linux", "lesson": "day0" },
+    { "id": "A", "track": "F", "name": "Build CARLA từ source", "lesson": "modA" },
+    { "id": "B", "track": "F", "name": "Docker tự xây", "lesson": "modB" },
+    { "id": "C", "track": "F", "name": "CARLA core API", "lesson": "day1-core" },
+    { "id": "T1", "track": "T1", "name": "Sensor & Data", "lesson": "day1-sensor" },
+    { "id": "R", "track": "T2", "name": "ROS 2", "lesson": "day2-ros" },
+    { "id": "T2", "track": "T2", "name": "Autoware", "lesson": "day2-aw" },
+    { "id": "T3", "track": "T3", "name": "Map · Asset · Scenario", "lesson": "day3" },
+    { "id": "U5", "track": "F", "name": "UE5 (0.10.0) — đào sâu", "lesson": "ue5" }
+  ],
+  "checkpoints": [
+    {
+      "id": "D0-01", "module": "D0", "day": 0, "required": true,
+      "skill": "Tôi có thể kết nối VPN, SSH vào server bằng alias và làm việc trong tmux mà không mất phiên khi rớt mạng.",
+      "evidence_required": "Log: output của `ssh <alias> 'uptime; nvidia-smi -L'` + ảnh tmux có ≥2 window (đã che IP/username).",
+      "evidence_types": ["log", "image"],
+      "look_for": "Lệnh chạy bằng alias (không gõ IP); tmux vẫn còn session sau khi ngắt/kết nối lại (`tmux ls`).",
+      "quiz": [
+        { "q": "Vì sao phải chạy build/CARLA bên trong tmux?", "a": "SSH đứt thì mọi process con của shell bị SIGHUP và chết. tmux giữ process trên server; kết nối lại rồi `tmux attach` là tiếp tục." },
+        { "q": "File ~/.ssh/config có tác dụng gì?", "a": "Lưu alias Host → HostName/User/IdentityFile/Port/LocalForward để gõ `ssh alias` thay vì cả chuỗi dài; dùng chung cho scp/rsync/VSCode Remote-SSH." }
+      ]
+    },
+    {
+      "id": "D0-02", "module": "D0", "day": 0, "required": true,
+      "skill": "Tôi có thể kiểm kê server (GPU, driver, OS, CPU, RAM, ổ đĩa, Docker, quyền sudo) và kết luận server có đủ điều kiện build/chạy CARLA không.",
+      "evidence_required": "Log `inventory.txt` do script kiểm kê sinh ra + 3 dòng kết luận (đủ/thiếu gì).",
+      "evidence_types": ["log"],
+      "look_for": "Driver NVIDIA và CUDA version, dung lượng trống ≥150 GB, số core, có nhóm docker/sudo, ai đang chiếm GPU.",
+      "quiz": [
+        { "q": "`df -h` và `du -sh` khác nhau thế nào?", "a": "`df` báo dung lượng theo filesystem/phân vùng (còn trống bao nhiêu); `du` đo dung lượng một thư mục cụ thể đang chiếm." },
+        { "q": "Làm sao biết process nào đang dùng GPU?", "a": "`nvidia-smi` (bảng Processes) hoặc `nvidia-smi --query-compute-apps=pid,used_memory --format=csv`, rồi `ps -fp <pid>` để xem user/lệnh." }
+      ]
+    },
+    {
+      "id": "D0-03", "module": "D0", "day": 0, "required": true,
+      "skill": "Tôi có thể thao tác Linux cơ bản: quyền file, biến môi trường, venv, xem process/port, đọc log.",
+      "evidence_required": "Log phiên terminal làm bài tập Linux (chmod, export, venv, ss -tlnp, journalctl/tail -f).",
+      "evidence_types": ["log"],
+      "look_for": "Tạo venv và cài package vào đúng venv; tìm được process giữ port 2000.",
+      "quiz": [
+        { "q": "`chmod 600 key` nghĩa là gì?", "a": "Chủ sở hữu đọc+ghi (6), group và others không có quyền (0,0). SSH yêu cầu private key không được đọc bởi người khác." },
+        { "q": "`export VAR=x` khác `VAR=x` thế nào?", "a": "`export` đưa biến vào môi trường của các process con; không export thì chỉ shell hiện tại thấy." }
+      ]
+    },
+    {
+      "id": "D0-04", "module": "D0", "day": 0, "required": true,
+      "skill": "Tôi có thể dùng Git để lưu bằng chứng học tập: add, commit, push, xem lịch sử.",
+      "evidence_required": "Link commit đầu tiên đẩy evidence lên repo này.",
+      "evidence_types": ["link"],
+      "look_for": "Commit message rõ ràng, không đẩy file nhạy cảm (key, mật khẩu, IP).",
+      "quiz": [
+        { "q": "`.gitignore` dùng để làm gì?", "a": "Liệt kê file/thư mục Git bỏ qua (build output, dataset lớn, secret) để không vô tình commit." }
+      ]
+    },
+
+    {
+      "id": "A-01", "module": "A", "day": 0, "required": true,
+      "skill": "Tôi có thể liên kết Epic Games với GitHub và clone được Unreal Engine fork của CARLA.",
+      "evidence_required": "Log `git clone`/`git log -1` của repo UE4 fork (che thông tin cá nhân).",
+      "evidence_types": ["log"],
+      "look_for": "Đúng branch mà docs CARLA 0.9.16 yêu cầu.",
+      "quiz": [
+        { "q": "Vì sao clone UE4 lại báo 404 dù URL đúng?", "a": "Repo Unreal Engine là private; chỉ tài khoản GitHub đã liên kết với Epic Games và chấp nhận lời mời vào tổ chức EpicGames mới xem được." }
+      ]
+    },
+    {
+      "id": "A-02", "module": "A", "day": 0, "required": true,
+      "skill": "Tôi có thể cài đủ prerequisites build CARLA và giải thích mỗi nhóm package dùng để làm gì.",
+      "evidence_required": "Log cài đặt + bảng tự viết: package → vai trò.",
+      "evidence_types": ["log"],
+      "look_for": "Phiên bản clang/cmake/python khớp docs 0.9.16.",
+      "quiz": [
+        { "q": "Ubuntu 22.04 cần gói g++ nào, và vì sao docs cấm `make -j$(nproc)`?", "a": "Docs 0.9.16 dùng `g++-12` trên 22.04 (`g++-9` trên 20.04). Không dùng `-j$(nproc)` vì bước build đã tự dùng hết core — thêm -j làm build lỗi." }
+      ]
+    },
+    {
+      "id": "A-03", "module": "A", "day": 0, "required": true,
+      "skill": "Tôi có thể build Unreal Engine 4.26 (fork CARLA) và đặt biến UE4_ROOT đúng.",
+      "evidence_required": "Log cuối quá trình `make` + `ls $UE4_ROOT/Engine/Binaries/Linux/` thấy UE4Editor + thời gian build.",
+      "evidence_types": ["log"],
+      "look_for": "Build thành công, UE4_ROOT được ghi trong ~/.bashrc.",
+      "quiz": [
+        { "q": "Build hết RAM khi link thì xử lý thế nào?", "a": "Xác nhận bằng `dmesg | grep -i kill` (OOM killer). Thêm swap, tắt process khác, giới hạn số action song song của UnrealBuildTool (BuildConfiguration.xml → MaxParallelActions) rồi chạy lại `make` — build là incremental nên không mất phần đã xong." }
+      ]
+    },
+    {
+      "id": "A-04", "module": "A", "day": 1, "required": true,
+      "skill": "Tôi có thể build CARLA PythonAPI ra wheel và cài vào venv, client khớp version server.",
+      "evidence_required": "Log `make PythonAPI` phần cuối + `ls PythonAPI/carla/dist` + `pip show carla`.",
+      "evidence_types": ["log"],
+      "look_for": "Wheel đúng phiên bản Python của venv.",
+      "quiz": [
+        { "q": "Client 0.9.15 kết nối server 0.9.16 thì sao?", "a": "CARLA cảnh báo version mismatch; API/serialization có thể không tương thích → lỗi khó đoán. Luôn dùng client đúng version server." }
+      ]
+    },
+    {
+      "id": "A-05", "module": "A", "day": 1, "required": true,
+      "skill": "Tôi có thể mở UE4 editor của CARLA bằng `make launch` qua màn hình từ xa (VNC).",
+      "evidence_required": "Ảnh chụp editor đang mở map Town10 qua VNC.",
+      "evidence_types": ["image"],
+      "look_for": "Editor chạy trên GPU 4090 (không phải llvmpipe).",
+      "quiz": [
+        { "q": "Vì sao `make launch` cần display còn server package thì không?", "a": "Editor là ứng dụng GUI cần cửa sổ X/Vulkan surface; server có thể chạy `-RenderOffScreen` render vào buffer, không cần màn hình." }
+      ]
+    },
+    {
+      "id": "A-06", "module": "A", "day": 1, "required": true,
+      "skill": "Tôi có thể đóng gói CARLA (`make package`), chạy server từ bản tự build và client spawn xe.",
+      "evidence_required": "Video ngắn xe chạy autopilot trên server từ bản package tự build + log `get_server_version()`.",
+      "evidence_types": ["video", "log"],
+      "look_for": "Server được chạy từ thư mục Dist/ của bản tự build, không phải bản release tải về.",
+      "quiz": [
+        { "q": "`make launch` và `make package` khác nhau thế nào?", "a": "`launch` build và mở editor để phát triển; `package` cook content + build bản Shipping độc lập (như bản release) để chạy server/triển khai Docker." }
+      ]
+    },
+    {
+      "id": "A-07", "module": "A", "day": 1, "required": false,
+      "skill": "Tôi có thể tự đọc log và sửa ít nhất 1 lỗi build thật.",
+      "evidence_required": "Log lỗi + ghi chú nguyên nhân → cách sửa → cách kiểm chứng.",
+      "evidence_types": ["log"],
+      "look_for": "Chỉ ra dòng log gốc (dòng lỗi đầu tiên), không phải dòng cuối.",
+      "quiz": [
+        { "q": "Vì sao đọc lỗi đầu tiên chứ không phải cuối cùng?", "a": "Lỗi đầu thường là nguyên nhân gốc; các lỗi sau là hệ quả dây chuyền (file không sinh ra → link fail…)." }
+      ]
+    },
+
+    {
+      "id": "B-01", "module": "B", "day": 1, "required": true,
+      "skill": "Tôi có thể giải thích image/container/layer/cache và chạy container có GPU (`nvidia-smi` trong container).",
+      "evidence_required": "Log `docker run --rm --gpus all <base> nvidia-smi`.",
+      "evidence_types": ["log"],
+      "look_for": "Thấy RTX 4090 trong container.",
+      "quiz": [
+        { "q": "Vì sao đặt `COPY requirements.txt` + `pip install` trước `COPY . .`?", "a": "Tận dụng layer cache: code đổi thường xuyên không làm cài lại dependency." }
+      ]
+    },
+    {
+      "id": "B-02", "module": "B", "day": 1, "required": true,
+      "skill": "Tôi có thể cấu hình Vulkan trong container để UE4 render bằng GPU.",
+      "evidence_required": "Log `vulkaninfo --summary` trong container thấy NVIDIA GeForce RTX 4090.",
+      "evidence_types": ["log"],
+      "look_for": "`NVIDIA_DRIVER_CAPABILITIES` có `graphics`; không phải llvmpipe (CPU).",
+      "quiz": [
+        { "q": "Container thấy GPU với nvidia-smi nhưng CARLA vẫn lỗi Vulkan — do đâu?", "a": "Thiếu capability `graphics`/`display` hoặc thiếu Vulkan ICD `nvidia_icd.json` và thư viện libvulkan1 trong image." }
+      ]
+    },
+    {
+      "id": "B-03", "module": "B", "day": 1, "required": true,
+      "skill": "Tôi có thể tự viết Dockerfile runtime cho CARLA (user không phải root, RenderOffScreen) từ bản package tự build.",
+      "evidence_required": "Dockerfile + log `docker build` + `docker images` (kích thước).",
+      "evidence_types": ["code", "log"],
+      "look_for": "Không dùng carlasim/carla; có USER non-root; không copy thừa (dùng .dockerignore).",
+      "quiz": [
+        { "q": "Vì sao phải tạo user thường trong image CARLA?", "a": "Unreal Engine từ chối chạy dưới root trên Linux; hơn nữa chạy root trong container là rủi ro bảo mật." }
+      ]
+    },
+    {
+      "id": "B-04", "module": "B", "day": 1, "required": true,
+      "skill": "Tôi có thể chạy container CARLA headless, client bên ngoài kết nối, spawn xe + camera và lưu ảnh ra volume.",
+      "evidence_required": "Ảnh camera thu được + lệnh `docker run` đã dùng.",
+      "evidence_types": ["image", "code"],
+      "look_for": "Port 2000-2002 thông; ảnh nằm trên host qua volume.",
+      "quiz": [
+        { "q": "`--net=host` và `-p 2000-2002:2000-2002` khác gì?", "a": "host: container dùng thẳng network stack của host (không NAT); -p: map port qua NAT của Docker, cô lập hơn nhưng phải map đủ các port." }
+      ]
+    },
+    {
+      "id": "B-05", "module": "B", "day": 1, "required": false,
+      "skill": "Tôi có thể viết docker compose chạy server CARLA + client thu data, có healthcheck.",
+      "evidence_required": "compose.yaml + log `docker compose ps` healthy.",
+      "evidence_types": ["code", "log"],
+      "look_for": "Client chỉ chạy khi server healthy (depends_on condition).",
+      "quiz": [
+        { "q": "Vì sao cần healthcheck thay vì sleep 20?", "a": "Thời gian khởi động server thay đổi; healthcheck kiểm tra thật (client kết nối được) nên ổn định hơn." }
+      ]
+    },
+    {
+      "id": "B-06", "module": "B", "day": 2, "required": false,
+      "skill": "Tôi có thể viết image build-env để build CARLA tái lập được trong container.",
+      "evidence_required": "Dockerfile build-env + log build thành công trong container.",
+      "evidence_types": ["code", "log"],
+      "look_for": "Source/UE4 mount bằng volume, không nhét vào layer.",
+      "quiz": [
+        { "q": "Vì sao không COPY cả UE4 (~100 GB) vào image?", "a": "Image khổng lồ, build/push chậm, mỗi thay đổi tạo layer mới; mount volume giữ image nhỏ, chỉ chứa toolchain." }
+      ]
+    },
+
+    {
+      "id": "C-01", "module": "C", "day": 1, "required": true,
+      "skill": "Tôi có thể giải thích kiến trúc server–client của CARLA, các port và kết nối client đúng version.",
+      "evidence_required": "Log script in `client.get_client_version()`, `get_server_version()`, map hiện tại.",
+      "evidence_types": ["log"],
+      "look_for": "Hai version trùng nhau.",
+      "quiz": [
+        { "q": "Port 2000, 2001, 8000 dùng làm gì?", "a": "2000: RPC (lệnh client→server); 2001 (=RPC+1): streaming dữ liệu sensor; 8000: Traffic Manager mặc định." }
+      ]
+    },
+    {
+      "id": "C-02", "module": "C", "day": 1, "required": true,
+      "skill": "Tôi có thể bật synchronous mode + fixed_delta_seconds + Traffic Manager sync và giải thích tại sao thu data phải dùng nó.",
+      "evidence_required": "Code + biểu đồ sim time theo frame (đều) so với async (lệch).",
+      "evidence_types": ["code", "chart"],
+      "look_for": "Mỗi tick đúng fixed_delta; không bỏ sót frame.",
+      "quiz": [
+        { "q": "Async mode gây vấn đề gì cho thu data?", "a": "Server chạy nhanh nhất có thể, client xử lý chậm sẽ mất frame, sensor lệch thời gian nhau, không tái lập được." },
+        { "q": "Quên tắt sync mode khi script crash thì sao?", "a": "Server đứng chờ tick() mãi → treo. Luôn khôi phục settings trong finally." }
+      ]
+    },
+    {
+      "id": "C-03", "module": "C", "day": 1, "required": true,
+      "skill": "Tôi có thể spawn xe, bật autopilot, cho spectator đi theo xe và quay thành video.",
+      "evidence_required": "Video MP4 ≤10 MB ghép bằng ffmpeg từ frame camera.",
+      "evidence_types": ["video"],
+      "look_for": "Video mượt, đúng FPS = 1/fixed_delta.",
+      "quiz": [
+        { "q": "Vì sao phải destroy actor khi kết thúc?", "a": "Actor tồn tại trên server sau khi script dừng; lần chạy sau spawn đè lên, tốn tài nguyên, sai kết quả." }
+      ]
+    },
+    {
+      "id": "C-04", "module": "C", "day": 1, "required": true,
+      "skill": "Tôi có thể chuyển đổi tọa độ giữa CARLA/UE (tay trái), ROS (tay phải) và camera OpenCV.",
+      "evidence_required": "Code hàm chuyển đổi + ảnh kiểm chứng (điểm 3D chiếu đúng vị trí trên ảnh).",
+      "evidence_types": ["code", "image"],
+      "look_for": "Lật trục y khi sang ROS; camera: z tới trước, x phải, y xuống.",
+      "quiz": [
+        { "q": "Chuyển một điểm CARLA (x,y,z) sang ROS thế nào?", "a": "(x, -y, z); với góc: roll giữ, pitch và yaw đổi dấu (tùy quy ước bridge) — luôn kiểm chứng bằng rviz." }
+      ]
+    },
+    {
+      "id": "C-05", "module": "C", "day": 1, "required": false,
+      "skill": "Tôi có thể ghi một phiên mô phỏng bằng Recorder và replay lại.",
+      "evidence_required": "Log `show_recorder_info` + video replay.",
+      "evidence_types": ["log", "video"],
+      "look_for": "Replay giống hệt lần chạy gốc.",
+      "quiz": [
+        { "q": "Recorder có ghi lại dữ liệu sensor không?", "a": "Không — chỉ ghi trạng thái actor/sự kiện; khi replay phải gắn lại sensor để sinh lại dữ liệu." }
+      ]
+    },
+    {
+      "id": "C-06", "module": "C", "day": 1, "required": false,
+      "skill": "Tôi có thể thay đổi weather/thời gian trong ngày để tạo biến thể dữ liệu.",
+      "evidence_required": "Ảnh so sánh cùng khung cảnh: nắng vs mưa/đêm.",
+      "evidence_types": ["image-compare"],
+      "look_for": "Cùng vị trí camera, chỉ khác weather.",
+      "quiz": [
+        { "q": "Tham số nào của WeatherParameters điều khiển thời gian trong ngày?", "a": "`sun_altitude_angle` (âm = đêm) và `sun_azimuth_angle`." }
+      ]
+    },
+
+    {
+      "id": "T1-01", "module": "T1", "day": 1, "required": true,
+      "skill": "Tôi có thể gắn đủ các loại sensor (RGB, depth, semantic, LiDAR, radar, GNSS, IMU) và giải thích các thuộc tính chính.",
+      "evidence_required": "Ảnh lưới: output của từng sensor tại cùng một frame.",
+      "evidence_types": ["image"],
+      "look_for": "Cùng frame id; rotation_frequency LiDAR = 1/fixed_delta.",
+      "quiz": [
+        { "q": "LiDAR bị 'nửa vòng' mỗi frame — vì sao?", "a": "rotation_frequency không khớp tần số tick: mỗi tick LiDAR chỉ quay được một phần vòng. Đặt rotation_frequency = 1/fixed_delta_seconds." },
+        { "q": "points_per_second ảnh hưởng gì?", "a": "Tổng số điểm phát mỗi giây chia đều cho các channel; tăng → point cloud dày hơn nhưng nặng hơn." }
+      ]
+    },
+    {
+      "id": "T1-02", "module": "T1", "day": 1, "required": true,
+      "skill": "Tôi có thể tính ma trận intrinsic K từ fov, dựng extrinsic và chiếu LiDAR lên ảnh camera khớp.",
+      "evidence_required": "Ảnh LiDAR chiếu lên camera (màu theo khoảng cách) + file calib.",
+      "evidence_types": ["image", "code"],
+      "look_for": "Điểm LiDAR nằm đúng mép xe/cột, không lệch.",
+      "quiz": [
+        { "q": "Công thức tiêu cự từ fov ngang?", "a": "f = W / (2·tan(fov/2)), cx = W/2, cy = H/2 (CARLA camera lý tưởng, không méo)." }
+      ]
+    },
+    {
+      "id": "T1-03", "module": "T1", "day": 1, "required": true,
+      "skill": "Tôi có thể thiết kế và so sánh các layout sensor bằng sơ đồ phủ (coverage) và vùng mù.",
+      "evidence_required": "File sensor-layout JSON cho ≥2 cấu hình → sơ đồ BEV.",
+      "evidence_types": ["sensor-layout"],
+      "look_for": "Vùng đỏ (vùng mù) quanh xe; cấu hình nào phủ 360° tốt hơn.",
+      "quiz": [
+        { "q": "Đặt LiDAR trên nóc cao hơn có lợi/hại gì?", "a": "Lợi: tầm nhìn xa, ít bị che. Hại: vùng mù gần xe lớn hơn (tia thấp nhất chạm đất xa hơn), khó phát hiện vật thấp sát xe." }
+      ]
+    },
+    {
+      "id": "T1-04", "module": "T1", "day": 1, "required": true,
+      "skill": "Tôi có thể xuất point cloud LiDAR (.ply), giảm mẫu và so sánh giữa các vị trí gắn.",
+      "evidence_required": "2 file .ply (≤5 MB) cùng frame với 2 vị trí LiDAR khác nhau.",
+      "evidence_types": ["pointcloud"],
+      "look_for": "Mật độ điểm trên xe phía trước; bóng che do thân xe.",
+      "quiz": [
+        { "q": "Voxel downsampling làm gì?", "a": "Chia không gian thành ô lập phương kích thước v, mỗi ô giữ 1 điểm (trọng tâm) → giảm điểm, giữ hình dạng." }
+      ]
+    },
+    {
+      "id": "T1-05", "module": "T1", "day": 1, "required": true,
+      "skill": "Tôi có thể viết pipeline thu data đồng bộ theo frame (queue mỗi sensor), không rớt frame.",
+      "evidence_required": "Biểu đồ: số frame mong đợi vs nhận được mỗi sensor + thời gian xử lý mỗi tick.",
+      "evidence_types": ["chart", "code"],
+      "look_for": "Không có frame thiếu; mỗi frame đủ mọi sensor cùng frame id.",
+      "quiz": [
+        { "q": "Vì sao dùng queue + `get(timeout)` thay vì ghi file trong callback?", "a": "Callback chạy trên thread khác, không đảm bảo thứ tự; queue cho phép main loop gom đúng frame id từng sensor sau mỗi tick và phát hiện thiếu." }
+      ]
+    },
+    {
+      "id": "T1-06", "module": "T1", "day": 1, "required": true,
+      "skill": "Tôi có thể sinh ground truth 2D/3D bounding box từ actor và lọc object bị che khuất.",
+      "evidence_required": "Ảnh camera + file JSON box (hiển thị overlay bật/tắt class).",
+      "evidence_types": ["bbox-overlay"],
+      "look_for": "Box ôm sát object; object bị che hoàn toàn không có box.",
+      "quiz": [
+        { "q": "Lọc occlusion bằng depth camera thế nào?", "a": "Chiếu các đỉnh/điểm của box lên ảnh, so khoảng cách thật với giá trị depth tại pixel đó; nếu depth nhỏ hơn nhiều → bị che." }
+      ]
+    },
+    {
+      "id": "T1-07", "module": "T1", "day": 1, "required": true,
+      "skill": "Tôi có thể xuất dataset theo format KITTI (image, velodyne, label, calib).",
+      "evidence_required": "Log `tree -L 2` dataset + 1 file label và 1 file calib mẫu.",
+      "evidence_types": ["log"],
+      "look_for": "Tọa độ label ở hệ camera KITTI; calib có P2, R0_rect, Tr_velo_to_cam.",
+      "quiz": [
+        { "q": "Một dòng label KITTI gồm những trường nào?", "a": "type, truncated, occluded, alpha, bbox 2D (4), dimensions h w l, location x y z (hệ camera), rotation_y (+ score nếu là dự đoán)." }
+      ]
+    },
+    {
+      "id": "T1-08", "module": "T1", "day": 2, "required": false,
+      "skill": "Tôi có thể xuất dữ liệu sang rosbag2 (MCAP) hoặc cấu trúc kiểu nuScenes.",
+      "evidence_required": "Log `ros2 bag info` hoặc cây thư mục nuScenes-style.",
+      "evidence_types": ["log"],
+      "look_for": "Timestamp header đúng sim time; frame_id khớp tf.",
+      "quiz": [
+        { "q": "Vì sao MCAP được ưa dùng?", "a": "Định dạng container self-describing, ghi nhanh, đọc được không cần ROS, Foxglove mở trực tiếp; là storage mặc định từ ROS 2 Iron." }
+      ]
+    },
+    {
+      "id": "T1-09", "module": "T1", "day": 2, "required": true,
+      "skill": "Tôi có thể viết báo cáo QA dataset: frame drop, lệch timestamp, phân bố class, checksum.",
+      "evidence_required": "Biểu đồ phân bố class + bảng QA + file checksum.",
+      "evidence_types": ["chart", "log"],
+      "look_for": "Tiêu chí pass/fail rõ ràng, số liệu cụ thể.",
+      "quiz": [
+        { "q": "Datasheet của dataset cần có những gì?", "a": "Mục đích, nguồn/phiên bản simulator, map, weather, seed, sensor + calib, format, số lượng, phân bố class, hạn chế đã biết, cách tái tạo." }
+      ]
+    },
+    {
+      "id": "T1-10", "module": "T1", "day": 2, "required": true,
+      "skill": "Tôi có thể so sánh định lượng các layout sensor (coverage, số điểm LiDAR trên object theo khoảng cách).",
+      "evidence_required": "Biểu đồ số điểm/object theo khoảng cách cho từng layout + kết luận.",
+      "evidence_types": ["chart"],
+      "look_for": "Cùng scenario/seed cho mọi layout (so sánh công bằng).",
+      "quiz": [
+        { "q": "Vì sao phải cố định seed khi so sánh layout?", "a": "Để traffic/scenario giống hệt nhau; khác biệt kết quả chỉ đến từ layout sensor." }
+      ]
+    },
+
+    {
+      "id": "R-01", "module": "R", "day": 2, "required": true,
+      "skill": "Tôi có thể dùng ROS 2 CLI: node, topic list/echo/hz/info, interface show.",
+      "evidence_required": "Log các lệnh CLI trên topic sensor từ CARLA.",
+      "evidence_types": ["log"],
+      "look_for": "Tần số topic ≈ tần số tick.",
+      "quiz": [
+        { "q": "QoS reliable vs best_effort — sensor thường dùng cái nào?", "a": "Sensor dữ liệu lớn/tần số cao thường best_effort; subscriber reliable không nhận được từ publisher best_effort (không tương thích)." }
+      ]
+    },
+    {
+      "id": "R-02", "module": "R", "day": 2, "required": true,
+      "skill": "Tôi có thể đọc cây tf2 và hiển thị sensor trong rviz2/Foxglove qua màn hình từ xa.",
+      "evidence_required": "Ảnh rviz2/Foxglove hiển thị point cloud + camera + tf.",
+      "evidence_types": ["image"],
+      "look_for": "Frame cố định đúng (map/base_link), không lỗi 'no transform'.",
+      "quiz": [
+        { "q": "`use_sim_time` để làm gì?", "a": "Node lấy thời gian từ topic /clock của simulator thay vì đồng hồ hệ thống — bắt buộc khi chạy với CARLA." }
+      ]
+    },
+    {
+      "id": "R-03", "module": "R", "day": 2, "required": true,
+      "skill": "Tôi có thể ghi, xem thông tin và phát lại rosbag2.",
+      "evidence_required": "Log `ros2 bag record/info/play`.",
+      "evidence_types": ["log"],
+      "look_for": "Bag có đủ topic cần, kích thước hợp lý.",
+      "quiz": [
+        { "q": "Phát lại bag với sim time cần tham số gì?", "a": "`ros2 bag play <bag> --clock` và các node chạy `use_sim_time:=true`." }
+      ]
+    },
+    {
+      "id": "R-04", "module": "R", "day": 2, "required": true,
+      "skill": "Tôi có thể đưa dữ liệu sensor CARLA 0.9.16 lên ROS 2 (native ROS 2 hoặc bridge).",
+      "evidence_required": "Log `ros2 topic list` + ảnh Foxglove thấy dữ liệu.",
+      "evidence_types": ["log", "image"],
+      "look_for": "Tên topic/frame_id theo đúng cấu hình.",
+      "quiz": [
+        { "q": "Native ROS 2 trong CARLA khác ros-bridge thế nào?", "a": "Native: server publish trực tiếp qua DDS (không cần process bridge Python), nhanh hơn; bridge: process riêng dịch Python API sang topic, linh hoạt hơn, hỗ trợ nhiều message hơn." }
+      ]
+    },
+
+    {
+      "id": "T2-01", "module": "T2", "day": 2, "required": true,
+      "skill": "Tôi có thể giải thích kiến trúc Autoware (sensing → localization → perception → planning → control) và map cần gì.",
+      "evidence_required": "Sơ đồ tự vẽ + ghi chú topic chính giữa các khối.",
+      "evidence_types": ["image"],
+      "look_for": "Nêu được Lanelet2 + pointcloud map dùng ở đâu.",
+      "quiz": [
+        { "q": "Autoware cần những map nào?", "a": "Lanelet2 (vector map: làn, đèn, luật) cho planning, và pointcloud map (.pcd) cho localization NDT; hai map phải cùng hệ tọa độ gốc." }
+      ]
+    },
+    {
+      "id": "T2-02", "module": "T2", "day": 2, "required": true,
+      "skill": "Tôi có thể chạy Autoware kết nối CARLA ở Town01 và xe được localize đúng.",
+      "evidence_required": "Ảnh rviz2 Autoware: xe nằm đúng làn, point cloud khớp map.",
+      "evidence_types": ["image"],
+      "look_for": "Pose ổn định, không nhảy.",
+      "quiz": [
+        { "q": "Xe bị localize sai/nhảy — kiểm tra gì trước?", "a": "Initial pose, tf base_link→sensor, map đúng Town, sim time đồng bộ, tần số LiDAR đủ." }
+      ]
+    },
+    {
+      "id": "T2-03", "module": "T2", "day": 2, "required": true,
+      "skill": "Tôi có thể đặt goal, engage và để Autoware lái xe tới đích trong CARLA.",
+      "evidence_required": "Video xe tự lái tới goal (màn hình CARLA + rviz).",
+      "evidence_types": ["video"],
+      "look_for": "Xe đi đúng làn, dừng ở goal, không va chạm.",
+      "quiz": [
+        { "q": "Planning không ra trajectory — nguyên nhân thường gặp?", "a": "Goal không nằm trên lanelet hợp lệ, localization chưa ổn định, route không tồn tại theo hướng làn." }
+      ]
+    },
+    {
+      "id": "T2-04", "module": "T2", "day": 2, "required": true,
+      "skill": "Tôi có thể chuyển sensor layout của Task 1 thành cấu hình sensor kit/calibration cho Autoware.",
+      "evidence_required": "File yaml calibration + ảnh tf tree mới.",
+      "evidence_types": ["code", "image"],
+      "look_for": "Extrinsic khớp với vị trí gắn trong CARLA (đã đổi tay trái→phải).",
+      "quiz": [
+        { "q": "Extrinsic trong CARLA (tay trái) đưa sang yaml Autoware cần lưu ý gì?", "a": "Đổi dấu y và các góc tương ứng, đơn vị rad, gốc base_link (Autoware đặt ở tâm cầu sau) khác gốc actor CARLA (tâm bounding box)." }
+      ]
+    },
+    {
+      "id": "T2-05", "module": "T2", "day": 2, "required": false,
+      "skill": "Tôi có thể tự debug một lỗi tích hợp (tf, thời gian, QoS, VRAM) và ghi lại.",
+      "evidence_required": "Log lỗi + ghi chú nguyên nhân/sửa.",
+      "evidence_types": ["log"],
+      "look_for": "Có bước kiểm chứng sau khi sửa.",
+      "quiz": [
+        { "q": "Lệnh nào xem cây tf hiện tại?", "a": "`ros2 run tf2_tools view_frames` (sinh PDF) hoặc `ros2 run tf2_ros tf2_echo a b`." }
+      ]
+    },
+
+    {
+      "id": "T3-01", "module": "T3", "day": 3, "required": true,
+      "skill": "Tôi có thể đọc GPS trace thật và hiển thị lên bản đồ (GeoJSON).",
+      "evidence_required": "File GeoJSON trace hiển thị trên bản đồ OSM.",
+      "evidence_types": ["map"],
+      "look_for": "Trace nằm trên đường thật, không nhảy điểm.",
+      "quiz": [
+        { "q": "GeoJSON lưu tọa độ theo thứ tự nào?", "a": "[longitude, latitude] — ngược với thói quen lat, lon." }
+      ]
+    },
+    {
+      "id": "T3-02", "module": "T3", "day": 3, "required": true,
+      "skill": "Tôi có thể tải và làm sạch dữ liệu OSM vùng quanh trace (bbox, lọc highway).",
+      "evidence_required": "Ảnh vùng OSM đã cắt + file .osm (kích thước).",
+      "evidence_types": ["image", "log"],
+      "look_for": "Chỉ giữ đường xe chạy được; không có đường đứt đoạn.",
+      "quiz": [
+        { "q": "Vì sao phải cắt vùng nhỏ?", "a": "Map lớn sinh OpenDRIVE nặng, nhiều junction lỗi, load chậm; chỉ cần vùng scenario + đệm." }
+      ]
+    },
+    {
+      "id": "T3-03", "module": "T3", "day": 3, "required": true,
+      "skill": "Tôi có thể chuyển OSM → OpenDRIVE (Osm2Odr) và load vào CARLA, xe chạy được.",
+      "evidence_required": "Video/ảnh xe chạy trên map sinh ra + file .xodr.",
+      "evidence_types": ["video", "image"],
+      "look_for": "Làn và junction đúng; xe autopilot không đi lạc.",
+      "quiz": [
+        { "q": "`generate_opendrive_world` khác map dựng trong UE4 thế nào?", "a": "Sinh mesh đường đơn giản từ .xodr lúc chạy, không có nhà cửa/cây/vạch đẹp; nhanh để thử. Map đầy đủ phải import qua UE4 editor." }
+      ]
+    },
+    {
+      "id": "T3-04", "module": "T3", "day": 3, "required": true,
+      "skill": "Tôi có thể georeference: chuyển lat/lon ↔ tọa độ CARLA và đo sai số so với GPS thật.",
+      "evidence_required": "Bản đồ chồng GPS thật và đường CARLA quy đổi ngược + sai số trung bình.",
+      "evidence_types": ["map"],
+      "look_for": "Sai số nhỏ, đều (không lệch tăng dần).",
+      "quiz": [
+        { "q": "Hàm CARLA nào chuyển Location sang GPS?", "a": "`world.get_map().transform_to_geolocation(location)` — dựa trên geoReference trong header OpenDRIVE." }
+      ]
+    },
+    {
+      "id": "T3-05", "module": "T3", "day": 3, "required": false,
+      "skill": "Tôi có thể tạo Lanelet2 + pointcloud map cùng gốc tọa độ cho Autoware từ map mới.",
+      "evidence_required": "Ảnh Lanelet2 chồng lên pointcloud map trong rviz/Vector Map Builder.",
+      "evidence_types": ["image"],
+      "look_for": "Làn vector trùng mép đường trong point cloud.",
+      "quiz": [
+        { "q": "Lấy pointcloud map cho map CARLA mới bằng cách nào?", "a": "Cho xe chạy khắp map gắn LiDAR, gom point cloud theo pose ground truth rồi voxel downsample và lưu .pcd." }
+      ]
+    },
+    {
+      "id": "T3-06", "module": "T3", "day": 3, "required": true,
+      "skill": "Tôi có thể chuẩn bị model trong Blender đúng scale, pivot, trục và export FBX cho CARLA.",
+      "evidence_required": "Ảnh so sánh: model trong Blender vs trong CARLA (cạnh một xe chuẩn để so kích thước).",
+      "evidence_types": ["image-compare"],
+      "look_for": "Kích thước thật (m), không bị xoay 90°, đặt đúng mặt đất.",
+      "quiz": [
+        { "q": "Model import vào UE bị nhỏ 100 lần — vì sao?", "a": "Blender dùng mét, UE dùng centimet; phải đặt Unit Scale/Apply Scale khi export FBX cho đúng." }
+      ]
+    },
+    {
+      "id": "T3-07", "module": "T3", "day": 3, "required": true,
+      "skill": "Tôi có thể import asset vào CARLA bản build từ source (make import) và spawn trong mô phỏng.",
+      "evidence_required": "Ảnh asset xuất hiện trong CARLA + blueprint id tìm được bằng Python.",
+      "evidence_types": ["image", "log"],
+      "look_for": "Có collision; semantic tag đúng (hiện trong camera semantic).",
+      "quiz": [
+        { "q": "Có import asset mới thẳng vào bản release tải về được không?", "a": "Không trực tiếp: asset phải được UE4 editor 'cook' trước — bằng source build (`make import` → `make package`) hoặc Docker monolith của CARLA (`docker_tools.py`). Bản release chỉ nhận package đã cook qua `Util/ImportAssets.sh`." }
+      ]
+    },
+    {
+      "id": "T3-08", "module": "T3", "day": 3, "required": true,
+      "skill": "Tôi có thể chuyển track object từ annotation sang tọa độ CARLA và replay bằng set_transform mỗi tick.",
+      "evidence_required": "CSV quỹ đạo gốc vs replay + biểu đồ sai số theo thời gian.",
+      "evidence_types": ["trajectory"],
+      "look_for": "Sai số vị trí nhỏ, không trôi theo thời gian; nội suy đúng khi tần số annotation ≠ tần số sim.",
+      "quiz": [
+        { "q": "Annotation 10 Hz, sim 20 Hz — làm sao?", "a": "Nội suy tuyến tính vị trí và nội suy góc (xử lý wrap-around ±180°) cho các tick ở giữa." }
+      ]
+    },
+    {
+      "id": "T3-09", "module": "T3", "day": 3, "required": true,
+      "skill": "Tôi có thể viết file OpenSCENARIO (.xosc) và chạy bằng ScenarioRunner.",
+      "evidence_required": "File .xosc + video scenario chạy.",
+      "evidence_types": ["code", "video"],
+      "look_for": "Trigger/điều kiện kết thúc chạy đúng; kết quả criteria in ra.",
+      "quiz": [
+        { "q": "Storyboard của OpenSCENARIO gồm cấp nào?", "a": "Storyboard → Init + Story → Act → ManeuverGroup → Maneuver → Event → Action, với StartTrigger/StopTrigger." }
+      ]
+    },
+    {
+      "id": "T3-10", "module": "T3", "day": 3, "required": true,
+      "skill": "Tôi có thể chạy scenario tổng hợp: map từ GPS + object replay + ego do Autoware lái + ghi data.",
+      "evidence_required": "Video tổng hợp + tóm tắt kết quả (collision, route completion).",
+      "evidence_types": ["video"],
+      "look_for": "Cả pipeline chạy liền mạch, có số liệu đánh giá.",
+      "quiz": [
+        { "q": "Nêu 3 metric đánh giá scenario.", "a": "Có va chạm không, tỉ lệ hoàn thành route, TTC (time-to-collision) tối thiểu; thêm: vi phạm làn/đèn, jerk." }
+      ]
+    },
+
+    {
+      "id": "U5-01", "module": "U5", "day": 3, "required": false,
+      "skill": "Tôi có thể nêu khác biệt chính giữa CARLA 0.9.16 (UE4) và 0.10.0 (UE5) và chạy thử 0.10.0.",
+      "evidence_required": "Bảng so sánh tự viết + ảnh 0.10.0 chạy.",
+      "evidence_types": ["image"],
+      "look_for": "Nêu được điều gì chưa port, yêu cầu phần cứng.",
+      "quiz": [
+        { "q": "Script 0.9.16 chạy trên 0.10.0 có được không?", "a": "Phần lớn Python API giống, nhưng phải dùng wheel của 0.10.0, và một số map/blueprint/tính năng khác hoặc chưa có — cần kiểm tra lại." }
+      ]
+    }
+  ]
+}

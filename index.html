@@ -1,0 +1,2113 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CARLA Bootcamp</title>
+<meta name="description" content="Lộ trình 3 ngày tự học CARLA 0.9.16 (UE4): build từ source, Docker tự xây, sensor & dữ liệu, Autoware (ROS 2), scenario từ dữ liệu thật.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css?v=1">
+<link rel="stylesheet" href="assets/lesson.css?v=1">
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+} }
+</script>
+</head>
+<body>
+<header class="topbar">
+  <div class="inner">
+    <a class="brand" href="#start">CARLA <span>Bootcamp</span></a>
+    <nav class="tabs-mini">
+      <a href="index.html" aria-current="page">Bài học</a>
+      <a href="progress.html">Tiến độ</a>
+    </nav>
+    <div class="spacer"></div>
+    <button class="btn" id="btnAll" aria-pressed="false" title="Hiện mọi phần trên một trang (để Ctrl+F / in)">Xem tất cả</button>
+    <button class="btn" id="btnTheme" title="Đổi giao diện sáng/tối">◐</button>
+  </div>
+</header>
+
+<div class="layout">
+  <aside class="side" aria-label="Mục lục">
+    <div class="card mini" id="miniProg">Đang tải tiến độ…</div>
+    <div class="grp">Bắt đầu</div>
+    <a href="#start" data-tab="start"><span class="dot"></span>Lộ trình &amp; cách học</a>
+    <div class="grp">Ngày 0 · Nền tảng</div>
+    <a href="#day0" data-tab="day0" data-mod="D0"><span class="dot"></span>Truy cập &amp; Linux<span class="n"></span></a>
+    <a href="#modA" data-tab="modA" data-mod="A"><span class="dot"></span>A · Build CARLA từ source<span class="n"></span></a>
+    <a href="#modB" data-tab="modB" data-mod="B"><span class="dot"></span>B · Docker tự xây<span class="n"></span></a>
+    <div class="grp">Ngày 1 · Task 1</div>
+    <a href="#day1-core" data-tab="day1-core" data-mod="C"><span class="dot"></span>CARLA core API<span class="n"></span></a>
+    <a href="#day1-sensor" data-tab="day1-sensor" data-mod="T1"><span class="dot"></span>Sensor &amp; Data<span class="n"></span></a>
+    <div class="grp">Ngày 2 · Task 2</div>
+    <a href="#day2-ros" data-tab="day2-ros" data-mod="R"><span class="dot"></span>ROS 2<span class="n"></span></a>
+    <a href="#day2-aw" data-tab="day2-aw" data-mod="T2"><span class="dot"></span>Autoware ↔ CARLA<span class="n"></span></a>
+    <div class="grp">Ngày 3 · Task 3</div>
+    <a href="#day3" data-tab="day3" data-mod="T3"><span class="dot"></span>Map · Asset · Scenario<span class="n"></span></a>
+    <a href="#ue5" data-tab="ue5" data-mod="U5"><span class="dot"></span>UE5 (0.10.0)<span class="n"></span></a>
+    <div class="grp">Tra cứu</div>
+    <a href="#evidence" data-tab="evidence"><span class="dot"></span>Cách tạo bằng chứng</a>
+    <a href="#cheatsheet" data-tab="cheatsheet"><span class="dot"></span>Cheat sheet</a>
+    <a href="#glossary" data-tab="glossary"><span class="dot"></span>Thuật ngữ</a>
+    <a href="#mentor" data-tab="mentor"><span class="dot"></span>Hỏi mentor &amp; chatbot</a>
+  </aside>
+
+  <main class="lesson">
+    <div class="mobile-nav">
+      <select id="mobileSel" aria-label="Chọn bài">
+        <option value="start">Lộ trình &amp; cách học</option>
+        <option value="day0">Ngày 0 · Truy cập &amp; Linux</option>
+        <option value="modA">A · Build CARLA từ source</option>
+        <option value="modB">B · Docker tự xây</option>
+        <option value="day1-core">Ngày 1 · CARLA core API</option>
+        <option value="day1-sensor">Ngày 1 · Sensor &amp; Data</option>
+        <option value="day2-ros">Ngày 2 · ROS 2</option>
+        <option value="day2-aw">Ngày 2 · Autoware ↔ CARLA</option>
+        <option value="day3">Ngày 3 · Map · Asset · Scenario</option>
+        <option value="ue5">UE5 (0.10.0)</option>
+        <option value="evidence">Cách tạo bằng chứng</option>
+        <option value="cheatsheet">Cheat sheet</option>
+        <option value="glossary">Thuật ngữ</option>
+        <option value="mentor">Hỏi mentor &amp; chatbot</option>
+      </select>
+    </div>
+
+<!-- ============================================================ START -->
+<section class="tab" id="tab-start">
+  <div class="lesson-head">
+    <div class="kicker">BẮT ĐẦU</div>
+    <h1>Lộ trình 3 ngày: CARLA 0.9.16 (UE4) → Autoware → Scenario</h1>
+    <div class="meta"><span class="chip">CARLA 0.9.16 · UE4</span><span class="chip">Autoware · ROS 2 Humble</span><span class="chip">Server RTX 4090 từ xa</span><span class="chip">53 checkpoint</span></div>
+  </div>
+
+  <div class="why"><b class="lbl">Mục tiêu sau khóa</b>
+    <ul>
+      <li>Tự vào server lab, tự <b>build CARLA 0.9.16 từ source</b> và tự <b>viết Docker image</b> chạy CARLA headless trên GPU (không dùng image <code>carlasim/carla</code>).</li>
+      <li><b>Task 1:</b> gắn và so sánh vị trí sensor bằng số liệu; thu dataset đồng bộ, có ground truth, calib, QA; xuất được KITTI / nuScenes-style / rosbag2.</li>
+      <li><b>Task 2:</b> hiểu ROS 2 và kiến trúc Autoware; cho Autoware lái xe trong CARLA; đổi sensor layout của Task 1 thành sensor kit.</li>
+      <li><b>Task 3:</b> dựng map từ GPS → OSM → OpenDRIVE; đưa object từ Blender vào CARLA; replay track từ annotation; viết OpenSCENARIO.</li>
+      <li>Có <a href="progress.html">trang Tiến độ</a> chứa bằng chứng trực quan (video, point cloud 3D, bản đồ, biểu đồ) để tự review và show mentor.</li>
+    </ul>
+  </div>
+
+  <h2><span class="num">1</span>Bức tranh tổng thể</h2>
+  <figure class="diagram">
+    <svg viewBox="0 0 860 330" role="img" aria-label="Sơ đồ 3 task của team">
+      <defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="svg-arrow"/></marker></defs>
+      <rect x="300" y="110" width="260" height="110" rx="12" class="svg-acc"/>
+      <text x="430" y="140" text-anchor="middle" class="svg-t" font-weight="700">CARLA 0.9.16 server (UE4)</text>
+      <text x="430" y="162" text-anchor="middle" class="svg-s">tự build từ source · chạy trong Docker tự viết</text>
+      <text x="430" y="182" text-anchor="middle" class="svg-s">GPU RTX 4090 · -RenderOffScreen</text>
+      <text x="430" y="202" text-anchor="middle" class="svg-s">Python API :2000 · Traffic Manager :8000</text>
+
+      <rect x="20" y="20" width="230" height="120" rx="10" class="svg-ok"/>
+      <text x="135" y="45" text-anchor="middle" class="svg-t" font-weight="700">Task 1 · Sensor &amp; Data</text>
+      <text x="135" y="68" text-anchor="middle" class="svg-s">layout sensor → coverage, vùng mù</text>
+      <text x="135" y="88" text-anchor="middle" class="svg-s">thu data đồng bộ + GT + calib</text>
+      <text x="135" y="108" text-anchor="middle" class="svg-s">QA → dataset cho bên đánh giá</text>
+      <path d="M250,80 C280,80 280,130 300,135" class="svg-line" marker-end="url(#ar)"/>
+
+      <rect x="610" y="20" width="230" height="120" rx="10" class="svg-warn"/>
+      <text x="725" y="45" text-anchor="middle" class="svg-t" font-weight="700">Task 2 · Autoware (ROS 2)</text>
+      <text x="725" y="68" text-anchor="middle" class="svg-s">sensor topics → localization</text>
+      <text x="725" y="88" text-anchor="middle" class="svg-s">perception → planning → control</text>
+      <text x="725" y="108" text-anchor="middle" class="svg-s">lệnh lái → xe ego trong CARLA</text>
+      <path d="M560,140 C590,140 590,85 610,80" class="svg-line" marker-end="url(#ar)"/>
+      <path d="M610,110 C585,120 585,170 560,175" class="svg-line" marker-end="url(#ar)"/>
+
+      <rect x="20" y="190" width="230" height="120" rx="10" class="svg-box"/>
+      <text x="135" y="215" text-anchor="middle" class="svg-t" font-weight="700">Task 3 · Scenario thật → sim</text>
+      <text x="135" y="238" text-anchor="middle" class="svg-s">GPS → OSM → OpenDRIVE (map)</text>
+      <text x="135" y="258" text-anchor="middle" class="svg-s">Blender → FBX → import (object)</text>
+      <text x="135" y="278" text-anchor="middle" class="svg-s">annotation → replay / OpenSCENARIO</text>
+      <path d="M250,250 C280,250 280,200 300,195" class="svg-line" marker-end="url(#ar)"/>
+
+      <rect x="610" y="190" width="230" height="120" rx="10" class="svg-box"/>
+      <text x="725" y="215" text-anchor="middle" class="svg-t" font-weight="700">Nền tảng (Ngày 0)</text>
+      <text x="725" y="238" text-anchor="middle" class="svg-s">VPN · SSH · tmux · Linux · Git</text>
+      <text x="725" y="258" text-anchor="middle" class="svg-s">Build UE4 + CARLA từ source</text>
+      <text x="725" y="278" text-anchor="middle" class="svg-s">Dockerfile tự viết + GPU/Vulkan</text>
+      <path d="M610,250 C585,250 585,215 560,210" class="svg-line" marker-end="url(#ar)" stroke-dasharray="4 3"/>
+    </svg>
+    <figcaption>Mọi task đều xoay quanh một CARLA server bạn tự build và tự đóng gói Docker.</figcaption>
+  </figure>
+
+  <h2><span class="num">2</span>Cách học trên trang này</h2>
+  <p>Mỗi bài có cùng cấu trúc: <b>Tại sao cần</b> → <b>Khái niệm</b> → <b>Lab</b> (lệnh/code copy được) → <b>Lỗi thường gặp</b> → <b>Tự kiểm tra</b> (đáp án ẩn) → <b>Hỏi chatbot</b> (prompt mẫu) → <b>Checkpoint</b>.</p>
+  <ul>
+    <li><span class="chip req">bắt buộc</span> phải xong trước ngày đi làm. <span class="chip deep">đào sâu</span> làm trong tuần đầu.</li>
+    <li>Mỗi checkpoint có <b>bằng chứng</b> cụ thể (ảnh, video, log, point cloud, bản đồ…). Làm lab xong thì lưu bằng chứng ngay, rồi cập nhật trên <a href="progress.html">trang Tiến độ</a> — xem <a href="#evidence">Cách tạo bằng chứng</a>.</li>
+    <li>Cấp độ: <span class="lv lv1">① Hiểu</span> giải thích được · <span class="lv lv2">② Làm được</span> có tài liệu bên cạnh · <span class="lv lv3">③ Tự làm</span> làm lại từ đầu không nhìn tài liệu và tự sửa lỗi. Mục tiêu: mọi checkpoint bắt buộc đạt ②, phần build/Docker/sync đạt ③.</li>
+    <li>Lệnh có ký hiệu <code>&lt;SERVER_IP&gt;</code>, <code>&lt;SSH_USER&gt;</code>… là chỗ bạn tự điền. <b>Không bao giờ</b> ghi giá trị thật vào repo này (repo public).</li>
+  </ul>
+  <div class="callout warn"><p><b>Nói thẳng:</b> 3 ngày đủ để bạn <b>tự vận hành được và biết tìm ở đâu</b>, chưa phải "master". Build UE4 mất nhiều giờ nên phải khởi động ngay tối Ngày 0 và học API song song bằng bản release.</p></div>
+
+  <h2 id="schedule"><span class="num">3</span>Lịch học chi tiết</h2>
+  <p class="muted">Nếu bạn chỉ có 18–20/09 trước khi đi làm: Ngày 3 dồn vào tối 20/09 và chỉ làm checkpoint bắt buộc; phần đào sâu làm trong tuần đầu.</p>
+  <div class="table-wrap"><table class="sched">
+    <tr class="blk"><td colspan="3">Ngày 0 — chiều &amp; tối (≈ 8 h)</td></tr>
+    <tr><td>1 h</td><td>VPN, SSH config, VSCode Remote-SSH, tmux</td><td>D0-01</td></tr>
+    <tr><td>1.5 h</td><td>Kiểm kê server + Linux sinh tồn</td><td>D0-02, D0-03</td></tr>
+    <tr><td>1 h</td><td>Liên kết Epic ↔ GitHub, cài prerequisites, clone UE4</td><td>A-01, A-02</td></tr>
+    <tr><td>0.5 h</td><td><b>Khởi động build UE4 trong tmux (chạy qua đêm)</b> + tải bản release 0.9.16</td><td>A-03 (chạy nền)</td></tr>
+    <tr><td>1.5 h</td><td>Git + repo tiến độ; Docker cơ bản, GPU trong container</td><td>D0-04, B-01</td></tr>
+    <tr><td>2.5 h</td><td>CARLA core với bản release: kết nối, spawn, sync mode, video</td><td>C-01…C-03</td></tr>
+    <tr class="blk"><td colspan="3">Ngày 1 — Task 1 + build (≈ 14 h)</td></tr>
+    <tr><td>1 h</td><td>Kiểm tra build UE4 → chạy <code>Update.sh</code>, <code>make PythonAPI</code> (nền)</td><td>A-03, A-04</td></tr>
+    <tr><td>1.5 h</td><td>Hệ tọa độ + các loại sensor</td><td>C-04, T1-01</td></tr>
+    <tr><td>1.5 h</td><td>Calibration, chiếu LiDAR lên ảnh</td><td>T1-02</td></tr>
+    <tr><td>1.5 h</td><td>Layout sensor, coverage, point cloud</td><td>T1-03, T1-04</td></tr>
+    <tr><td>2 h</td><td>Pipeline thu data đồng bộ + ground truth box</td><td>T1-05, T1-06</td></tr>
+    <tr><td>1.5 h</td><td><code>make launch</code> / <code>make package</code>, chạy bản tự build</td><td>A-05, A-06</td></tr>
+    <tr><td>2.5 h</td><td>Docker tự xây: Vulkan, Dockerfile runtime, chạy container</td><td>B-02…B-04</td></tr>
+    <tr><td>2 h</td><td>Xuất KITTI, QA, so sánh layout</td><td>T1-07, T1-09, T1-10</td></tr>
+    <tr class="blk"><td colspan="3">Ngày 2 — Task 2 (≈ 10 h)</td></tr>
+    <tr><td>2 h</td><td>ROS 2 cơ bản (CLI, tf2, bag, QoS, sim time)</td><td>R-01…R-03</td></tr>
+    <tr><td>1 h</td><td>CARLA 0.9.16 native ROS 2 + Foxglove</td><td>R-04</td></tr>
+    <tr><td>1 h</td><td>Kiến trúc Autoware</td><td>T2-01</td></tr>
+    <tr><td>3 h</td><td>Autoware + CARLA Town01: localize, goal, engage</td><td>T2-02, T2-03</td></tr>
+    <tr><td>1 h</td><td>Sensor kit từ layout Task 1</td><td>T2-04</td></tr>
+    <tr class="blk"><td colspan="3">Ngày 3 — Task 3 (≈ 8 h)</td></tr>
+    <tr><td>1.5 h</td><td>GPS → GeoJSON → OSM → OpenDRIVE → CARLA</td><td>T3-01…T3-03</td></tr>
+    <tr><td>1 h</td><td>Georeference &amp; đo sai số</td><td>T3-04</td></tr>
+    <tr><td>1.5 h</td><td>Blender → FBX → import vào CARLA</td><td>T3-06, T3-07</td></tr>
+    <tr><td>2 h</td><td>Replay track + OpenSCENARIO/ScenarioRunner</td><td>T3-08, T3-09</td></tr>
+    <tr><td>2 h</td><td>Scenario tổng hợp + review toàn bộ checkpoint</td><td>T3-10</td></tr>
+  </table></div>
+
+  <h2><span class="num">4</span>Nguyên tắc làm việc trên server dùng chung</h2>
+  <ol>
+    <li><b>Mọi việc dài chạy trong <code>tmux</code></b>, và ghi log: <code>lệnh 2&gt;&amp;1 | tee -a ~/logs/ten.log</code>.</li>
+    <li><b>Kiểm tra GPU trước khi chạy</b> (<code>nvidia-smi</code>) — người khác có thể đang dùng. Dùng port riêng nếu 2000 đã bị chiếm.</li>
+    <li><b>Lưu bằng chứng ngay khi xong lab</b> vào <code>evidence/&lt;mã&gt;/</code> — đừng để cuối ngày.</li>
+    <li><b>Không đưa bí mật lên Git</b>: IP, username, key, mật khẩu, hostname. Che trong ảnh chụp.</li>
+    <li><b>Không xóa thứ bạn không tạo ra</b> trên server. Hỏi trước.</li>
+  </ol>
+  <p>Các câu cần hỏi mentor ngay ngày đầu: xem <a href="#mentor">Hỏi mentor &amp; chatbot</a>.</p>
+</section>
+
+<!-- ============================================================ DAY 0 -->
+<section class="tab" id="tab-day0">
+  <div class="lesson-head">
+    <div class="kicker">NGÀY 0 · NỀN TẢNG</div>
+    <h1>Truy cập server &amp; Linux sinh tồn</h1>
+    <div class="meta"><span class="chip req">bắt buộc</span><span class="chip">≈ 4 h</span><span class="chip">D0-01 … D0-04</span></div>
+  </div>
+  <div class="why"><b class="lbl">Tại sao cần</b>Server 4090 nằm trong mạng lab, không có màn hình. Mọi việc (build, chạy CARLA, Autoware) đều làm qua SSH. Nếu không vững phần này, bạn sẽ mất phiên build khi rớt VPN, không biết process nào chiếm GPU, không tự đọc được log.</div>
+
+  <h2 id="d0-ssh"><span class="num">0.1</span>VPN + SSH từ Windows</h2>
+  <p>Kết nối VPN theo tài liệu nội bộ lab (FortiClient). Sau khi VPN lên, server truy cập được bằng IP nội bộ.</p>
+  <div class="lab steps">
+    <h3>Lab: SSH bằng alias</h3>
+    <div class="step"><b>Có key.</b> Nhận private key từ admin, hoặc tự tạo và gửi <i>public key</i> cho admin:
+      <pre data-lang="powershell"><script type="text/plain">
+        ssh-keygen -t ed25519 -f $env:USERPROFILE\.ssh\<KEY_NAME> -C "<ten-ban>@lab"
+        Get-Content $env:USERPROFILE\.ssh\<KEY_NAME>.pub   # gửi dòng này cho admin
+      </script></pre>
+    </div>
+    <div class="step"><b>Siết quyền file key</b> (OpenSSH trên Windows từ chối key "quá mở"):
+      <pre data-lang="powershell"><script type="text/plain">
+        icacls $env:USERPROFILE\.ssh\<KEY_NAME> /inheritance:r
+        icacls $env:USERPROFILE\.ssh\<KEY_NAME> /grant:r "$($env:USERNAME):(R)"
+      </script></pre>
+    </div>
+    <div class="step"><b>Thêm alias</b> vào <code>%USERPROFILE%\.ssh\config</code>:
+      <pre data-lang="sshconfig"><script type="text/plain">
+        Host lab4090
+            HostName <SERVER_IP>
+            User <SSH_USER>
+            IdentityFile ~/.ssh/<KEY_NAME>
+            ServerAliveInterval 30
+            ServerAliveCountMax 4
+            # cổng để xem GUI / Foxglove trên máy mình (dùng ở Ngày 1–2)
+            LocalForward 6080 localhost:6080
+            LocalForward 8765 localhost:8765
+      </script></pre>
+    </div>
+    <div class="step"><b>Kiểm tra</b>:
+      <pre data-lang="powershell"><script type="text/plain">
+        ssh lab4090 'uptime; nvidia-smi -L'
+      </script></pre>
+    </div>
+    <div class="step"><b>VSCode Remote-SSH</b>: cài extension <i>Remote - SSH</i> → <kbd>F1</kbd> → <i>Remote-SSH: Connect to Host</i> → <code>lab4090</code>. Mở thư mục <code>~/work</code> trên server; terminal trong VSCode lúc này chạy trên server.</div>
+    <div class="step"><b>Chép file</b> giữa server và máy mình:
+      <pre data-lang="powershell"><script type="text/plain">
+        scp lab4090:~/work/out/video.mp4 .\evidence\C-03\
+        scp -r .\scripts lab4090:~/work/
+      </script></pre>
+    </div>
+  </div>
+
+  <h2 id="d0-tmux"><span class="num">0.2</span>tmux — không bao giờ mất phiên</h2>
+  <p>SSH đứt thì mọi process con của shell bị kill. <code>tmux</code> giữ phiên trên server; kết nối lại rồi <i>attach</i> là tiếp tục.</p>
+  <div class="table-wrap"><table>
+    <tr><th>Việc</th><th>Lệnh / phím</th></tr>
+    <tr><td>Tạo phiên tên <code>build</code></td><td><code>tmux new -s build</code></td></tr>
+    <tr><td>Rời phiên (vẫn chạy)</td><td><kbd>Ctrl</kbd>+<kbd>b</kbd> rồi <kbd>d</kbd></td></tr>
+    <tr><td>Xem các phiên / vào lại</td><td><code>tmux ls</code> · <code>tmux a -t build</code></td></tr>
+    <tr><td>Cửa sổ mới / chuyển</td><td><kbd>Ctrl</kbd>+<kbd>b</kbd> <kbd>c</kbd> · <kbd>Ctrl</kbd>+<kbd>b</kbd> <kbd>n</kbd>/<kbd>p</kbd> · <kbd>Ctrl</kbd>+<kbd>b</kbd> <kbd>0..9</kbd></td></tr>
+    <tr><td>Chia đôi màn hình</td><td><kbd>Ctrl</kbd>+<kbd>b</kbd> <kbd>%</kbd> (dọc) · <kbd>Ctrl</kbd>+<kbd>b</kbd> <kbd>"</kbd> (ngang)</td></tr>
+    <tr><td>Cuộn xem log cũ</td><td><kbd>Ctrl</kbd>+<kbd>b</kbd> <kbd>[</kbd> rồi phím mũi tên, <kbd>q</kbd> để thoát</td></tr>
+  </table></div>
+  <p>Mẫu tổ chức: phiên <code>build</code> (UE4/CARLA), phiên <code>sim</code> (window 0: server CARLA, window 1: client Python, window 2: <code>watch -n1 nvidia-smi</code>).</p>
+
+  <h2 id="d0-inventory"><span class="num">0.3</span>Kiểm kê server</h2>
+  <p>Trước khi build 130 GB, phải biết server có đủ điều kiện không. Script này ghi ra <code>~/inventory.txt</code> và tự che hostname/username.</p>
+  <pre data-lang="bash"><script type="text/plain">
+    mkdir -p ~/work ~/logs && cd ~/work
+    cat > inventory.sh <<'EOF'
+    #!/usr/bin/env bash
+    {
+      echo "## OS";        lsb_release -ds; uname -r
+      echo "## CPU / RAM"; nproc; free -h | head -2
+      echo "## GPU";       nvidia-smi --query-gpu=name,driver_version,memory.total,memory.used --format=csv
+      echo "## GPU apps";  nvidia-smi --query-compute-apps=pid,process_name,used_memory --format=csv
+      echo "## Disk";      df -h ~ /tmp
+      echo "## Quyền";     groups
+      sudo -n true 2>/dev/null && echo "sudo: OK" || echo "sudo: cần mật khẩu hoặc không có"
+      echo "## Docker";    docker --version; docker info --format '{{.Runtimes}}' 2>&1 | head -1
+      echo "## NVIDIA Container Toolkit"; nvidia-ctk --version 2>&1 | head -1
+      echo "## Vulkan";    vulkaninfo --summary 2>/dev/null | grep -E "deviceName|apiVersion" | head -4
+      echo "## Python";    python3 --version; which conda
+      echo "## Mạng";      curl -sI https://github.com | head -1; curl -sI https://pypi.org | head -1
+      echo "## Có sẵn gì?"; ls -d ~/*arla* ~/*utoware* /opt/*arla* 2>/dev/null
+      docker images 2>/dev/null | grep -Ei "carla|autoware|ros"
+    } 2>&1 | sed -E "s/$(hostname)/<HOST>/g; s/${USER}/<USER>/g" | tee ~/inventory.txt
+    EOF
+    chmod +x inventory.sh && ./inventory.sh
+  </script></pre>
+  <div class="table-wrap"><table>
+    <tr><th>Điều kiện</th><th>Cần</th><th>Thiếu thì</th></tr>
+    <tr><td>OS</td><td>Ubuntu 20.04 hoặc 22.04 (docs 0.9.16)</td><td>Build trong Docker build-env (Module B)</td></tr>
+    <tr><td>Ổ trống</td><td>≥ 130 GB cho UE4 + CARLA (docs), nên ≥ 200 GB</td><td>Hỏi admin ổ khác / dọn dẹp của mình</td></tr>
+    <tr><td>RAM</td><td>Khuyến nghị thực tế ≥ 32 GB khi build UE4 (docs không ghi)</td><td>Thêm swap, giảm job song song</td></tr>
+    <tr><td>Docker + nhóm docker + runtime nvidia</td><td>Có</td><td>Nhờ admin cài NVIDIA Container Toolkit, thêm bạn vào nhóm <code>docker</code></td></tr>
+    <tr><td>Internet ra GitHub/PyPI</td><td>Có</td><td>Hỏi proxy của lab</td></tr>
+  </table></div>
+
+  <h2 id="d0-linux"><span class="num">0.4</span>Linux sinh tồn</h2>
+  <div class="two">
+    <div><h4>Di chuyển &amp; file</h4>
+      <pre data-lang="bash"><script type="text/plain">
+        pwd; ls -lah; cd ~/work; cd -
+        mkdir -p a/b/c; cp -r src dst; mv a b
+        find ~/carla -name "*.whl"
+        grep -rn "fixed_delta" ~/work
+        less file.log   # / để tìm, q để thoát
+        tail -f ~/logs/ue4.log
+      </script></pre></div>
+    <div><h4>Quyền, biến môi trường</h4>
+      <pre data-lang="bash"><script type="text/plain">
+        ls -l            # -rw-r--r-- = user rw, group r, other r
+        chmod +x run.sh; chmod 600 key
+        echo $PATH
+        export UE4_ROOT=~/UnrealEngine_4.26   # chỉ phiên này
+        echo 'export UE4_ROOT=~/UnrealEngine_4.26' >> ~/.bashrc
+        source ~/.bashrc
+      </script></pre></div>
+    <div><h4>Python venv</h4>
+      <pre data-lang="bash"><script type="text/plain">
+        python3 -m venv ~/venvs/carla
+        source ~/venvs/carla/bin/activate
+        which python; pip install numpy
+        deactivate
+      </script></pre></div>
+    <div><h4>Process, port, ổ đĩa</h4>
+      <pre data-lang="bash"><script type="text/plain">
+        ps aux | grep -i carla
+        htop                      # F9 kill, q thoát
+        kill <PID>; kill -9 <PID> # -9 khi process treo
+        ss -tlnp | grep 2000      # ai đang giữ port 2000
+        df -h; du -sh ~/* | sort -h | tail
+        dmesg | tail              # lỗi kernel, OOM killer
+      </script></pre></div>
+  </div>
+  <div class="lab">
+    <h3>Bài tập (ghi toàn bộ phiên làm bằng chứng D0-03)</h3>
+    <p class="goal">Chạy <code>script -q ~/logs/d0-03.log</code> để ghi lại mọi thứ bạn gõ, <code>exit</code> để dừng ghi.</p>
+    <ol>
+      <li>Tạo venv <code>~/venvs/test</code>, cài <code>numpy</code>, in version bằng Python.</li>
+      <li>Trong tmux chạy <code>python3 -m http.server 9000</code>; ở cửa sổ khác tìm PID bằng <code>ss -tlnp</code> rồi kill.</li>
+      <li>Tìm 5 thư mục lớn nhất trong <code>~</code>.</li>
+      <li>Thêm alias <code>alias gpu='watch -n1 nvidia-smi'</code> vào <code>~/.bashrc</code>, nạp lại và thử.</li>
+      <li>Tạo file <code>secret.txt</code>, đặt quyền để chỉ bạn đọc được, kiểm tra bằng <code>ls -l</code>.</li>
+    </ol>
+  </div>
+
+  <h2 id="d0-git"><span class="num">0.5</span>Git &amp; repo tiến độ</h2>
+  <p>Repo này là nơi lưu bằng chứng học tập. Làm việc với nó trên <b>máy Windows của bạn</b>; bằng chứng sinh trên server thì <code>scp</code> về.</p>
+  <pre data-lang="powershell"><script type="text/plain">
+    git clone https://github.com/Drake-Phamta/carla-bootcamp.git
+    cd carla-bootcamp
+    git config user.name "<Tên bạn>"; git config user.email "<email>"
+    # sau mỗi lab:
+    mkdir evidence\C-03
+    scp lab4090:~/work/out/C-03.mp4 evidence\C-03\
+    git add evidence\C-03 data\progress.json
+    git diff --cached --stat
+    git commit -m "progress: C-03 spawn + autopilot video"
+    git push
+  </script></pre>
+  <div class="callout danger"><p><b>Trước mỗi lần push</b>: chạy lệnh kiểm tra bí mật ở <a href="#ev-safety">Cách tạo bằng chứng → An toàn</a>. Repo public = ai cũng đọc được, kể cả lịch sử commit.</p></div>
+
+  <h2 id="d0-remote-gui"><span class="num">0.6</span>Màn hình từ xa (cần cho UE4 editor, rviz2)</h2>
+  <p>Server không có màn hình. CARLA server chạy <code>-RenderOffScreen</code> không cần display, nhưng <b>UE4 editor</b> (<code>make launch</code>) và <b>rviz2</b> thì cần.</p>
+  <div class="table-wrap"><table>
+    <tr><th>Cách</th><th>Dùng khi</th><th>Ghi chú</th></tr>
+    <tr><td><b>Foxglove Studio</b> + <code>foxglove_bridge</code></td><td>Xem topic ROS 2 (point cloud, ảnh, tf)</td><td>Không cần X; chỉ cần forward port 8765. Nên dùng cho Ngày 2.</td></tr>
+    <tr><td><b>Xorg + NVIDIA trên màn hình ảo + x11vnc/noVNC</b></td><td>UE4 editor, rviz2 có tăng tốc GPU</td><td>Cần admin cấu hình Xorg (<code>nvidia-xconfig --allow-empty-initial-configuration</code>). Đây là cách chắc chắn cho Vulkan.</td></tr>
+    <tr><td>TigerVNC/Xvnc thuần</td><td>Terminal, trình duyệt, app nhẹ</td><td>Không có GPU cho Vulkan → UE4 editor thường không chạy được.</td></tr>
+  </table></div>
+  <p>Kiểm tra server đã có X chưa: <code>ps aux | grep -i xorg</code>. Nếu chưa, hỏi admin ngay tối nay vì Module A-05 cần.</p>
+
+  <h2 id="d0-kickoff"><span class="num">0.7</span>Khởi động việc dài hạn — làm ngay tối nay</h2>
+  <div class="lab steps">
+    <div class="step"><b>Liên kết Epic Games ↔ GitHub</b> (để được đọc repo Unreal Engine): tạo tài khoản Epic → trang quản lý tài khoản → mục <i>Apps and Accounts / Connections</i> → kết nối GitHub → mở email GitHub và <b>chấp nhận lời mời vào tổ chức EpicGames</b>. Thử mở <code>https://github.com/CarlaUnreal/UnrealEngine</code>: thấy code là được, 404 là chưa xong.</div>
+    <div class="step"><b>GitHub token</b>: clone repo private qua HTTPS cần <i>Personal Access Token</i> (Settings → Developer settings → Tokens), dùng làm mật khẩu khi <code>git clone</code> hỏi.</div>
+    <div class="step"><b>Bắt đầu build UE4</b> theo <a href="#a-ue4">Module A · A.2</a> trong tmux phiên <code>build</code>.</div>
+    <div class="step"><b>Tải bản release 0.9.16</b> để học API trong lúc chờ: lấy link <code>CARLA_0.9.16.tar.gz</code> từ trang release <code>github.com/carla-simulator/carla/releases/tag/0.9.16</code>, rồi:
+      <pre data-lang="bash"><script type="text/plain">
+        mkdir -p ~/carla-release && cd ~/carla-release
+        wget -c "<LINK_CARLA_0.9.16.tar.gz>"      # -c: tải tiếp nếu đứt
+        tar -xzf CARLA_0.9.16.tar.gz
+      </script></pre>
+    </div>
+  </div>
+
+  <h2><span class="num">0.8</span>Lỗi thường gặp</h2>
+  <div class="table-wrap"><table>
+    <tr><th>Triệu chứng</th><th>Nguyên nhân / cách sửa</th></tr>
+    <tr><td><code>Permission denied (publickey)</code></td><td>Sai đường dẫn IdentityFile, sai User, hoặc quyền key quá mở → chạy lại <code>icacls</code>; debug: <code>ssh -v lab4090</code>.</td></tr>
+    <tr><td>SSH treo không vào</td><td>Chưa bật VPN, hoặc VPN rớt. Kiểm tra: <code>Test-NetConnection &lt;SERVER_IP&gt; -Port 22</code>.</td></tr>
+    <tr><td>Build "biến mất" sau khi rớt mạng</td><td>Không chạy trong tmux. Luôn <code>tmux a</code> trước khi làm.</td></tr>
+    <tr><td><code>command not found</code> sau khi cài</td><td>Chưa <code>source ~/.bashrc</code> hoặc chưa kích hoạt venv.</td></tr>
+    <tr><td><code>No space left on device</code></td><td><code>df -h</code>, <code>du -sh</code>; xóa file <b>của mình</b> (cache pip: <code>pip cache purge</code>, image Docker thừa: <code>docker image prune</code>).</td></tr>
+  </table></div>
+
+  <h2><span class="num">0.9</span>Tự kiểm tra &amp; hỏi chatbot</h2>
+  <div class="qa">
+    <details><summary>Rớt VPN khi đang build — mất gì, còn gì?</summary><p>Nếu build chạy trong tmux: không mất gì, <code>tmux a -t build</code> là thấy tiếp. Nếu chạy trực tiếp trong SSH: process nhận SIGHUP và chết; build UE4/CARLA là incremental nên chạy lại sẽ tiếp từ phần chưa xong.</p></details>
+    <details><summary>Khác nhau giữa <code>~/.bashrc</code> và <code>export</code> trên terminal?</summary><p><code>export</code> chỉ sống trong phiên shell hiện tại; ghi vào <code>~/.bashrc</code> thì mọi shell mới (kể cả tmux window mới) đều có.</p></details>
+  </div>
+  <div class="prompt"><b>Prompt mẫu</b>
+    <pre data-lang="text"><script type="text/plain">
+      Tôi đang dùng Ubuntu 22.04 qua SSH (không có quyền sudo / có sudo).
+      Tôi chạy lệnh: <dán lệnh>
+      Kết quả: <dán nguyên văn lỗi, 20-40 dòng quanh dòng lỗi đầu tiên>
+      Tôi đã thử: <liệt kê>
+      Hãy giải thích nguyên nhân gốc và cho tôi lệnh kiểm chứng trước khi sửa.
+    </script></pre>
+  </div>
+  <div class="cp-box" data-module="D0"></div>
+</section>
+
+<!-- ============================================================ MODULE A -->
+<section class="tab" id="tab-modA">
+  <div class="lesson-head">
+    <div class="kicker">MODULE A · NGÀY 0 → 1</div>
+    <h1>Tự build CARLA 0.9.16 (UE4) từ source</h1>
+    <div class="meta"><span class="chip req">bắt buộc</span><span class="chip">build nền nhiều giờ</span><span class="chip">A-01 … A-07</span></div>
+  </div>
+  <div class="why"><b class="lbl">Tại sao cần</b>Team yêu cầu. Bản build từ source cho phép: (1) mở UE4 editor để <b>import asset Blender và map</b> (Task 3), (2) sửa/vá code CARLA khi cần, (3) đóng gói bản của chính mình để đưa vào <b>Docker image tự viết</b> (Module B).</div>
+
+  <figure class="diagram">
+    <svg viewBox="0 0 860 170" role="img" aria-label="Luồng build CARLA">
+      <defs><marker id="ar2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="svg-arrow"/></marker></defs>
+      <g font-size="12">
+        <rect x="10" y="20" width="150" height="60" rx="8" class="svg-box"/><text x="85" y="45" text-anchor="middle" class="svg-t">UE 4.26 fork</text><text x="85" y="64" text-anchor="middle" class="svg-s">Setup · Generate · make</text>
+        <rect x="190" y="20" width="150" height="60" rx="8" class="svg-box"/><text x="265" y="45" text-anchor="middle" class="svg-t">carla (ue4-dev)</text><text x="265" y="64" text-anchor="middle" class="svg-s">Update.sh → Content</text>
+        <rect x="370" y="20" width="150" height="60" rx="8" class="svg-acc"/><text x="445" y="45" text-anchor="middle" class="svg-t">make PythonAPI</text><text x="445" y="64" text-anchor="middle" class="svg-s">→ wheel .whl</text>
+        <rect x="550" y="20" width="140" height="60" rx="8" class="svg-acc"/><text x="620" y="45" text-anchor="middle" class="svg-t">make launch</text><text x="620" y="64" text-anchor="middle" class="svg-s">UE4 editor (cần X)</text>
+        <rect x="720" y="20" width="130" height="60" rx="8" class="svg-ok"/><text x="785" y="45" text-anchor="middle" class="svg-t">make package</text><text x="785" y="64" text-anchor="middle" class="svg-s">→ Dist/ (Shipping)</text>
+        <path d="M160,50 H188" class="svg-line" marker-end="url(#ar2)"/><path d="M340,50 H368" class="svg-line" marker-end="url(#ar2)"/><path d="M520,50 H548" class="svg-line" marker-end="url(#ar2)"/><path d="M690,50 H718" class="svg-line" marker-end="url(#ar2)"/>
+        <rect x="550" y="105" width="140" height="50" rx="8" class="svg-warn"/><text x="620" y="126" text-anchor="middle" class="svg-t">make import</text><text x="620" y="144" text-anchor="middle" class="svg-s">asset / map (Task 3)</text>
+        <path d="M620,80 V103" class="svg-line" marker-end="url(#ar2)"/>
+        <rect x="720" y="105" width="130" height="50" rx="8" class="svg-ok"/><text x="785" y="126" text-anchor="middle" class="svg-t">Docker image</text><text x="785" y="144" text-anchor="middle" class="svg-s">Module B</text>
+        <path d="M785,80 V103" class="svg-line" marker-end="url(#ar2)"/>
+      </g>
+    </svg>
+    <figcaption>UE4 build lâu nhất (vài giờ) → khởi động từ tối Ngày 0.</figcaption>
+  </figure>
+
+  <h2><span class="num">A.0</span>Yêu cầu (docs 0.9.16)</h2>
+  <div class="table-wrap"><table>
+    <tr><th>Mục</th><th>Yêu cầu</th></tr>
+    <tr><td>OS</td><td>Ubuntu 20.04 hoặc 22.04 (24.04 chưa được kiểm thử)</td></tr>
+    <tr><td>Ổ đĩa</td><td>~130 GB (CARLA ~31 GB + Unreal Engine ~91 GB)</td></tr>
+    <tr><td>GPU</td><td>≥ 6 GB VRAM (RTX 2070 trở lên) — 4090 dư sức</td></tr>
+    <tr><td>Port</td><td>TCP 2000 và 2001</td></tr>
+    <tr><td>Python</td><td>≥ 3.8</td></tr>
+  </table></div>
+  <p class="verify">carla.readthedocs.io/en/0.9.16/build_linux/</p>
+
+  <h2 id="a-prereq"><span class="num">A.1</span>Cài prerequisites</h2>
+  <pre data-lang="bash"><script type="text/plain">
+    sudo apt-get update
+    # Ubuntu 22.04 (trên 20.04 thay g++-12 bằng g++-9)
+    sudo apt-get install build-essential g++-12 cmake ninja-build libvulkan1 python3 python3-dev \
+      python3-pip python3-venv autoconf wget curl rsync unzip git git-lfs libpng-dev libtiff5-dev libjpeg-dev
+  </script></pre>
+  <div class="table-wrap"><table>
+    <tr><th>Nhóm</th><th>Để làm gì</th></tr>
+    <tr><td><code>build-essential g++-12 cmake ninja-build autoconf</code></td><td>Toolchain biên dịch C++ và hệ thống build (LibCarla, dependency)</td></tr>
+    <tr><td><code>libvulkan1</code></td><td>Loader Vulkan — UE4 render bằng Vulkan trên Linux</td></tr>
+    <tr><td><code>python3-dev python3-pip python3-venv</code></td><td>Build PythonAPI (header Python) và môi trường ảo</td></tr>
+    <tr><td><code>git git-lfs wget curl rsync unzip</code></td><td>Tải source, asset lớn, Content</td></tr>
+    <tr><td><code>libpng-dev libtiff5-dev libjpeg-dev</code></td><td>Đọc/ghi ảnh (sensor camera, save_to_disk)</td></tr>
+  </table></div>
+  <p>Không có sudo? → gửi danh sách này cho admin, hoặc build trong container build-env (<a href="#b-buildenv">Module B · B.6</a>).</p>
+
+  <h2 id="a-ue4"><span class="num">A.2</span>Build Unreal Engine 4.26 (fork của CARLA)</h2>
+  <div class="callout"><p>Điều kiện: đã liên kết Epic ↔ GitHub (<a href="#d0-kickoff">Ngày 0 · 0.7</a>). Chạy trong <code>tmux new -s build</code>.</p></div>
+  <pre data-lang="bash"><script type="text/plain">
+    git clone --depth 1 -b carla https://github.com/CarlaUnreal/UnrealEngine.git ~/UnrealEngine_4.26
+    cd ~/UnrealEngine_4.26
+    (./Setup.sh && ./GenerateProjectFiles.sh && make) 2>&1 | tee -a ~/logs/ue4_build.log
+    # xong thì:
+    echo 'export UE4_ROOT=~/UnrealEngine_4.26' >> ~/.bashrc && source ~/.bashrc
+    ls $UE4_ROOT/Engine/Binaries/Linux/ | grep -i UE4Editor
+  </script></pre>
+  <ul>
+    <li><code>Setup.sh</code>: tải dependency nhị phân của UE (vài GB). <code>GenerateProjectFiles.sh</code>: sinh file project/Makefile. <code>make</code>: biên dịch engine + editor (lâu nhất).</li>
+    <li><b>Không</b> thêm <code>-j$(nproc)</code>: docs cảnh báo build đã tự dùng hết core, thêm -j làm build lỗi.</li>
+    <li>Ghi lại thời gian bắt đầu/kết thúc (bằng chứng A-03).</li>
+  </ul>
+
+  <h2 id="a-carla"><span class="num">A.3</span>Clone CARLA và tải Content</h2>
+  <pre data-lang="bash"><script type="text/plain">
+    git clone -b ue4-dev https://github.com/carla-simulator/carla ~/carla
+    cd ~/carla
+    git checkout 0.9.16            # ghim đúng phiên bản (hỏi mentor team dùng tag hay ue4-dev)
+    echo 'export CARLA_UE4_ROOT=~/carla' >> ~/.bashrc && source ~/.bashrc
+    ./Update.sh 2>&1 | tee -a ~/logs/carla_update.log     # tải Content (vài chục GB)
+  </script></pre>
+  <p class="verify">Docs 0.9.16 clone branch <code>ue4-dev</code>; bước <code>git checkout 0.9.16</code> là để ghim version (suy luận, hỏi mentor quy ước của team).</p>
+
+  <h2 id="a-pyapi"><span class="num">A.4</span>Build PythonAPI → wheel</h2>
+  <pre data-lang="bash"><script type="text/plain">
+    python3 -m venv ~/venvs/carla-src && source ~/venvs/carla-src/bin/activate
+    python3 -m pip install --upgrade pip
+    python3 -m pip install --upgrade -r ${CARLA_UE4_ROOT}/PythonAPI/carla/requirements.txt
+    cd ~/carla && make PythonAPI 2>&1 | tee -a ~/logs/carla_pyapi.log
+    ls PythonAPI/carla/dist/
+    # tên wheel phụ thuộc Python của venv, vd carla-0.9.16-cp310-...whl
+    pip install PythonAPI/carla/dist/carla-0.9.16-*.whl
+    python -c "import carla; print(carla.__file__)"
+  </script></pre>
+  <p>Muốn wheel cho Python khác: tạo venv bằng Python đó rồi chạy lại. Script <code>Util/BuildTools/BuildPythonAPI.sh</code> có tùy chọn <code>--python-version=VERSION</code> (truyền qua <code>make PythonAPI ARGS="--python-version=3.10"</code> — cú pháp ARGS cần tự kiểm chứng).</p>
+
+  <h2 id="a-launch"><span class="num">A.5</span>Mở UE4 editor: <code>make launch</code></h2>
+  <pre data-lang="bash"><script type="text/plain">
+    cd ~/carla && make launch 2>&1 | tee -a ~/logs/carla_launch.log
+    # lần đầu biên dịch plugin + shader rất lâu; editor mở trên DISPLAY hiện tại (VNC)
+  </script></pre>
+  <p>Cần màn hình từ xa có GPU (xem <a href="#d0-remote-gui">0.6</a>). Trong editor: mở map <code>Town10HD_Opt</code>, bấm <b>Play</b> → editor lúc này là một CARLA server, client Python kết nối được vào port 2000.</p>
+
+  <h2 id="a-package"><span class="num">A.6</span>Đóng gói: <code>make package</code> và chạy bản của mình</h2>
+  <pre data-lang="bash"><script type="text/plain">
+    cd ~/carla && make package 2>&1 | tee -a ~/logs/carla_package.log
+    find Dist -maxdepth 4 -name CarlaUE4.sh      # tìm thư mục bản đóng gói
+    cd <thư-mục-chứa-CarlaUE4.sh>
+    ./CarlaUE4.sh -RenderOffScreen -nosound -carla-rpc-port=2000
+  </script></pre>
+  <pre data-lang="python"><script type="text/plain">
+    # check_server.py — chạy ở cửa sổ tmux khác, trong venv có wheel tự build
+    import carla
+    c = carla.Client("localhost", 2000); c.set_timeout(20.0)
+    print("client:", c.get_client_version(), "| server:", c.get_server_version())
+    print("map:", c.get_world().get_map().name)
+  </script></pre>
+  <div class="table-wrap"><table>
+    <tr><th>Target <code>make</code></th><th>Ý nghĩa</th></tr>
+    <tr><td><code>make help</code></td><td>Liệt kê target</td></tr>
+    <tr><td><code>make LibCarla</code></td><td>Chỉ build thư viện C++ lõi</td></tr>
+    <tr><td><code>make PythonAPI</code></td><td>Build LibCarla client + wheel Python</td></tr>
+    <tr><td><code>make launch</code></td><td>Build plugin + mở UE4 editor</td></tr>
+    <tr><td><code>make package</code></td><td>Cook content + build bản Shipping độc lập; <code>ARGS="--package=Tên"</code> để đóng gói package asset riêng</td></tr>
+    <tr><td><code>make import</code></td><td>Import map/asset trong <code>carla/Import</code> vào Unreal</td></tr>
+    <tr><td><code>make clean</code> / <code>make rebuild</code></td><td>Xóa build output / build lại từ đầu</td></tr>
+  </table></div>
+
+  <h2><span class="num">A.7</span>Hiểu cấu trúc repo</h2>
+  <div class="table-wrap"><table>
+    <tr><th>Thư mục</th><th>Nội dung</th></tr>
+    <tr><td><code>LibCarla/</code></td><td>Thư viện C++ lõi: RPC, streaming, road/OpenDRIVE, dùng cho cả server và client</td></tr>
+    <tr><td><code>PythonAPI/carla/</code></td><td>Binding Python (build ra wheel), <code>dist/</code> chứa wheel</td></tr>
+    <tr><td><code>PythonAPI/examples/</code>, <code>util/</code></td><td>Script mẫu (manual_control, generate_traffic, ros2, <code>util/config.py</code>)</td></tr>
+    <tr><td><code>Unreal/CarlaUE4/</code></td><td>Project UE4: plugin Carla, Content (map, xe, props)</td></tr>
+    <tr><td><code>Util/BuildTools/</code></td><td>Script build (<code>BuildPythonAPI.sh</code>, <code>Package.sh</code>, <code>Linux.mk.help</code>)</td></tr>
+    <tr><td><code>Util/Docker/</code></td><td>Dockerfile chính thức (chỉ để tham khảo — bạn tự viết ở Module B)</td></tr>
+    <tr><td><code>Import/</code></td><td>Nơi đặt package asset/map để <code>make import</code></td></tr>
+    <tr><td><code>Dist/</code></td><td>Output của <code>make package</code></td></tr>
+  </table></div>
+
+  <h2><span class="num">A.8</span>Lỗi thường gặp &amp; cách đọc log</h2>
+  <p><b>Quy tắc:</b> tìm <b>dòng lỗi đầu tiên</b> (<code>grep -n -i -m5 "error" ~/logs/x.log</code>), đọc 20 dòng quanh nó. Các lỗi phía sau thường là hệ quả.</p>
+  <div class="table-wrap"><table>
+    <tr><th>Triệu chứng</th><th>Nguyên nhân / cách sửa</th></tr>
+    <tr><td><code>repository not found</code> khi clone UE4</td><td>Chưa liên kết Epic/chưa chấp nhận lời mời, hoặc dùng mật khẩu thay vì token.</td></tr>
+    <tr><td>Build bị <code>Killed</code>, clang crash ngẫu nhiên</td><td>Hết RAM (OOM). Xác nhận: <code>dmesg | grep -i kill</code>. Thêm swap, đóng process khác, giới hạn <code>MaxParallelActions</code> trong <code>~/.config/Unreal Engine/UnrealBuildTool/BuildConfiguration.xml</code>, rồi <code>make</code> lại (incremental).</td></tr>
+    <tr><td><code>No space left on device</code></td><td>Cần ~130 GB. <code>df -h</code>; build lại sau khi giải phóng.</td></tr>
+    <tr><td>Lỗi khi dùng <code>make -j...</code></td><td>Docs: không dùng <code>-j$(nproc)</code>.</td></tr>
+    <tr><td><code>Update.sh</code> đứt giữa chừng</td><td>Mạng; chạy lại trong tmux.</td></tr>
+    <tr><td>Wheel không cài được (<code>not a supported wheel</code>)</td><td>Wheel build cho Python khác venv → build lại trong venv đúng.</td></tr>
+    <tr><td><code>make launch</code> báo lỗi Vulkan / không có display</td><td>Chưa có X server GPU → xem 0.6.</td></tr>
+    <tr><td>Client cảnh báo version mismatch</td><td>Dùng wheel build từ cùng source với server.</td></tr>
+  </table></div>
+
+  <h2><span class="num">A.9</span>Tự kiểm tra</h2>
+  <div class="qa">
+    <details><summary>Muốn sửa một dòng C++ trong LibCarla rồi chạy lại server — cần build lại gì?</summary><p><code>make launch</code> (editor) hoặc <code>make package</code> (bản đóng gói) sẽ build lại phần đã đổi; nếu thay đổi ảnh hưởng client thì <code>make PythonAPI</code> và cài lại wheel.</p></details>
+    <details><summary>Tại sao cần giữ log build?</summary><p>Để tìm dòng lỗi gốc, chứng minh với mentor, và so sánh khi build lại trên máy/Docker khác.</p></details>
+  </div>
+  <div class="prompt"><b>Prompt mẫu</b>
+    <pre data-lang="text"><script type="text/plain">
+      Tôi build CARLA 0.9.16 (UE4, branch ue4-dev, checkout tag 0.9.16) trên Ubuntu 22.04,
+      UE4 fork CarlaUnreal/UnrealEngine branch carla. Bước: <make PythonAPI / make launch / ...>
+      Dòng lỗi đầu tiên và 20 dòng xung quanh:
+      <dán log>
+      RAM/ổ trống: <free -h, df -h>. Hãy chỉ ra nguyên nhân gốc và cách kiểm chứng.
+    </script></pre>
+  </div>
+  <div class="cp-box" data-module="A"></div>
+</section>
+
+<!-- ============================================================ MODULE B -->
+<section class="tab" id="tab-modB">
+  <div class="lesson-head">
+    <div class="kicker">MODULE B · NGÀY 1</div>
+    <h1>Tự viết Docker image cho CARLA UE4</h1>
+    <div class="meta"><span class="chip req">bắt buộc</span><span class="chip">≈ 3 h</span><span class="chip">B-01 … B-06</span><span class="chip">không dùng <code>carlasim/carla</code></span></div>
+  </div>
+  <div class="why"><b class="lbl">Tại sao cần</b>Image tự viết = môi trường tái lập được: ai trong team cũng chạy đúng bản CARLA đã build, cùng thư viện, cùng cấu hình GPU. Bạn phải hiểu từng dòng để sửa khi lỗi Vulkan, thiếu thư viện, sai quyền.</div>
+
+  <h2><span class="num">B.0</span>Khái niệm cốt lõi</h2>
+  <div class="table-wrap"><table>
+    <tr><th>Khái niệm</th><th>Giải thích ngắn</th></tr>
+    <tr><td>Image / container</td><td>Image = khuôn chỉ đọc (nhiều layer). Container = một lần chạy của image, có layer ghi riêng, mất khi xóa container.</td></tr>
+    <tr><td>Layer &amp; cache</td><td>Mỗi lệnh <code>RUN/COPY</code> tạo layer. Docker dùng lại layer nếu lệnh và input không đổi → đặt thứ ít thay đổi lên trước.</td></tr>
+    <tr><td>Build context &amp; <code>.dockerignore</code></td><td>Thư mục gửi vào <code>docker build</code>. Loại bỏ file thừa để build nhanh và image nhỏ.</td></tr>
+    <tr><td>Volume / bind mount</td><td>Dữ liệu sống ngoài container (dataset, output). <code>-v /host/out:/out</code>.</td></tr>
+    <tr><td>Network</td><td><code>--net=host</code>: dùng thẳng mạng host. <code>-p 2000-2002:2000-2002</code>: map port qua NAT.</td></tr>
+    <tr><td>GPU</td><td>NVIDIA Container Toolkit tiêm driver vào container: <code>--gpus all</code> (hoặc <code>--runtime=nvidia</code> như docs CARLA). <code>NVIDIA_DRIVER_CAPABILITIES=all</code> để có cả <code>graphics</code> (Vulkan), không chỉ <code>compute</code>.</td></tr>
+  </table></div>
+
+  <h2 id="b-gpu"><span class="num">B.1</span>Kiểm tra GPU trong container</h2>
+  <pre data-lang="bash"><script type="text/plain">
+    docker run --rm --gpus all nvidia/cuda:12.4.1-base-ubuntu22.04 nvidia-smi
+  </script></pre>
+  <p>Thấy RTX 4090 là toolkit hoạt động (bằng chứng B-01). Lỗi <code>could not select device driver</code> → toolkit chưa cài/chưa cấu hình → nhờ admin.</p>
+
+  <h2 id="b-vulkan"><span class="num">B.2</span>Vulkan trong container</h2>
+  <pre data-lang="dockerfile"><script type="text/plain">
+    # ~/docker/vktest/Dockerfile
+    FROM ubuntu:22.04
+    ENV DEBIAN_FRONTEND=noninteractive NVIDIA_DRIVER_CAPABILITIES=all
+    RUN apt-get update && apt-get install -y --no-install-recommends vulkan-tools libvulkan1 \
+        && rm -rf /var/lib/apt/lists/*
+  </script></pre>
+  <pre data-lang="bash"><script type="text/plain">
+    cd ~/docker/vktest && docker build -t vktest .
+    docker run --rm --gpus all vktest vulkaninfo --summary | grep -E "deviceName|driverName"
+  </script></pre>
+  <p>Kết quả đúng: <code>deviceName = NVIDIA GeForce RTX 4090</code>. Nếu chỉ thấy <code>llvmpipe</code> (CPU) hoặc lỗi <i>no ICD</i>: thiếu file ICD của NVIDIA → thêm vào image:</p>
+  <pre data-lang="dockerfile"><script type="text/plain">
+    RUN mkdir -p /etc/vulkan/icd.d && printf '%s\n' \
+      '{"file_format_version":"1.0.0","ICD":{"library_path":"libGLX_nvidia.so.0","api_version":"1.3"}}' \
+      > /etc/vulkan/icd.d/nvidia_icd.json
+  </script></pre>
+
+  <h2 id="b-runtime"><span class="num">B.3</span>Dockerfile runtime cho CARLA (bạn tự viết)</h2>
+  <p>Chuẩn bị build context từ bản package tự build ở Module A:</p>
+  <pre data-lang="bash"><script type="text/plain">
+    mkdir -p ~/docker/carla-runtime/CarlaPackage
+    PKG=$(dirname "$(find ~/carla/Dist -maxdepth 4 -name CarlaUE4.sh | head -1)")
+    rsync -a "$PKG"/ ~/docker/carla-runtime/CarlaPackage/
+    du -sh ~/docker/carla-runtime/CarlaPackage
+  </script></pre>
+  <pre data-lang="dockerfile"><script type="text/plain">
+    # ~/docker/carla-runtime/Dockerfile
+    FROM ubuntu:22.04
+    ENV DEBIAN_FRONTEND=noninteractive
+
+    # 1) Thư viện runtime (đổi ít → để trên cùng để cache)
+    RUN apt-get update && apt-get install -y --no-install-recommends \
+          libsdl2-2.0-0 libvulkan1 libomp5 xdg-user-dirs \
+        && rm -rf /var/lib/apt/lists/*
+
+    # 2) Vulkan ICD của NVIDIA (nếu toolkit chưa tự mount)
+    RUN mkdir -p /etc/vulkan/icd.d && printf '%s\n' \
+      '{"file_format_version":"1.0.0","ICD":{"library_path":"libGLX_nvidia.so.0","api_version":"1.3"}}' \
+      > /etc/vulkan/icd.d/nvidia_icd.json
+
+    # 3) User thường — Unreal Engine từ chối chạy bằng root
+    RUN useradd -m -u 1000 carla
+
+    # 4) Bản CARLA tự build (đổi nhiều nhất → để cuối)
+    COPY --chown=carla:carla CarlaPackage/ /home/carla/carla/
+
+    USER carla
+    WORKDIR /home/carla/carla
+    ENV NVIDIA_VISIBLE_DEVICES=all NVIDIA_DRIVER_CAPABILITIES=all
+    EXPOSE 2000-2002
+
+    # kiểm tra port RPC đã mở (không cần Python trong image)
+    HEALTHCHECK --interval=10s --timeout=3s --start-period=90s --retries=6 \
+      CMD bash -c 'echo > /dev/tcp/127.0.0.1/2000' || exit 1
+
+    ENTRYPOINT ["./CarlaUE4.sh"]
+    CMD ["-RenderOffScreen", "-nosound", "-carla-rpc-port=2000"]
+  </script></pre>
+  <pre data-lang="text"><script type="text/plain">
+    # ~/docker/carla-runtime/.dockerignore
+    **/Saved/Logs
+    **/*.log
+  </script></pre>
+  <pre data-lang="bash"><script type="text/plain">
+    cd ~/docker/carla-runtime
+    docker build -t carla-runtime:0.9.16-self . 2>&1 | tee ~/logs/docker_build.log
+    docker images carla-runtime
+  </script></pre>
+  <ul>
+    <li><b>ENTRYPOINT + CMD:</b> ENTRYPOINT là chương trình, CMD là tham số mặc định → chạy <code>docker run ... carla-runtime:0.9.16-self -RenderOffScreen -carla-rpc-port=3000</code> để đổi tham số.</li>
+    <li><b>Thiếu thư viện?</b> Chạy thử rồi đọc lỗi <code>error while loading shared libraries: libXXX.so</code>, hoặc liệt kê hết một lần: <code>docker run --rm --entrypoint bash carla-runtime:0.9.16-self -c "ldd CarlaUE4/Binaries/Linux/CarlaUE4-Linux-Shipping | grep 'not found'"</code> → thêm package tương ứng (<code>apt-file search libXXX.so</code> trên host).</li>
+    <li><b>Tham khảo</b> (không copy nguyên): Dockerfile release chính thức dùng <code>ubuntu:20.04</code>, user <code>carla</code>, cài <code>libsdl2-2.0 xserver-xorg libvulkan1 libomp5 xdg-user-dirs</code>, đặt <code>NVIDIA_DRIVER_CAPABILITIES=all</code>. So sánh và giải thích vì sao bạn chọn khác.</li>
+  </ul>
+  <p class="verify">github.com/carla-simulator/carla/tree/0.9.16/Util/Docker (Release.Dockerfile), carla.readthedocs.io/en/0.9.16/build_docker/</p>
+
+  <h2 id="b-run"><span class="num">B.4</span>Chạy container và kết nối client</h2>
+  <pre data-lang="bash"><script type="text/plain">
+    nvidia-smi                                   # GPU có đang bị ai dùng nhiều?
+    docker run -d --name carla-$USER --gpus all --net=host carla-runtime:0.9.16-self
+    docker logs -f carla-$USER                   # Ctrl+C để thoát xem log
+    docker ps                                    # cột STATUS: (healthy)
+    # nếu port 2000 đã bị người khác dùng:
+    docker run -d --name carla-$USER --gpus all --net=host carla-runtime:0.9.16-self \
+      -RenderOffScreen -nosound -carla-rpc-port=3000
+  </script></pre>
+  <pre data-lang="python"><script type="text/plain">
+    # capture_one.py — client ngoài container: spawn xe + camera, lưu 1 ảnh
+    import carla, os, queue
+    c = carla.Client("localhost", 2000); c.set_timeout(20.0)
+    w = c.get_world(); bl = w.get_blueprint_library()
+    s = w.get_settings(); s.synchronous_mode = True; s.fixed_delta_seconds = 0.05; w.apply_settings(s)
+    actors = []
+    try:
+        car = w.spawn_actor(bl.find("vehicle.lincoln.mkz_2020"), w.get_map().get_spawn_points()[0]); actors.append(car)
+        cam_bp = bl.find("sensor.camera.rgb"); cam_bp.set_attribute("image_size_x", "1280"); cam_bp.set_attribute("image_size_y", "720")
+        cam = w.spawn_actor(cam_bp, carla.Transform(carla.Location(x=0.8, z=1.6)), attach_to=car); actors.append(cam)
+        q = queue.Queue(); cam.listen(q.put)
+        for _ in range(20): w.tick()                 # vài tick cho ảnh ổn định
+        img = q.get(timeout=5.0)
+        while not q.empty(): img = q.get()
+        os.makedirs("out", exist_ok=True); img.save_to_disk("out/B-04_%06d.png" % img.frame)
+        print("saved frame", img.frame)
+    finally:
+        s.synchronous_mode = False; w.apply_settings(s)
+        for a in reversed(actors): a.destroy()
+  </script></pre>
+  <div class="table-wrap"><table>
+    <tr><th>Triệu chứng</th><th>Nguyên nhân / cách sửa</th></tr>
+    <tr><td><code>Refusing to run with the root privileges</code></td><td>Thiếu <code>USER carla</code>.</td></tr>
+    <tr><td>Lỗi Vulkan / "no suitable device"</td><td>Thiếu <code>graphics</code> trong <code>NVIDIA_DRIVER_CAPABILITIES</code> hoặc thiếu ICD (B.2).</td></tr>
+    <tr><td>Container thoát ngay</td><td><code>docker logs carla-$USER</code>; thường thiếu thư viện hoặc sai quyền file.</td></tr>
+    <tr><td>Client timeout</td><td>Server chưa sẵn sàng (chờ healthy), sai port, hoặc dùng <code>-p</code> mà chỉ map 2000 (thiếu 2001 streaming).</td></tr>
+    <tr><td>Out of video memory</td><td>Người khác đang dùng GPU → <code>nvidia-smi</code>, giảm <code>-quality-level=Low</code>.</td></tr>
+  </table></div>
+
+  <h2 id="b-compose"><span class="num">B.5</span>docker compose: server + client <span class="chip deep">đào sâu</span></h2>
+  <pre data-lang="dockerfile"><script type="text/plain">
+    # ~/docker/client/Dockerfile — client Python dùng wheel tự build
+    FROM python:3.10-slim
+    COPY carla-0.9.16-*.whl /tmp/
+    RUN pip install --no-cache-dir /tmp/carla-0.9.16-*.whl numpy pillow
+    WORKDIR /app
+    COPY capture_one.py .
+    CMD ["python", "capture_one.py"]
+  </script></pre>
+  <pre data-lang="yaml"><script type="text/plain">
+    # ~/docker/compose.yaml
+    services:
+      carla:
+        image: carla-runtime:0.9.16-self
+        deploy:
+          resources:
+            reservations:
+              devices: [{ driver: nvidia, count: all, capabilities: [gpu] }]
+      client:
+        build: ./client
+        depends_on:
+          carla: { condition: service_healthy }
+        environment: [CARLA_HOST=carla]
+        volumes: ["./out:/app/out"]
+  </script></pre>
+  <p>Trong client, kết nối <code>carla.Client(os.environ.get("CARLA_HOST", "localhost"), 2000)</code>. Chạy: <code>docker compose up --build</code>; xem <code>docker compose ps</code>.</p>
+
+  <h2 id="b-buildenv"><span class="num">B.6</span>Image build-env: build CARLA trong container <span class="chip deep">đào sâu</span></h2>
+  <p>Image chỉ chứa toolchain; source UE4 và CARLA nằm trên host và được <b>mount</b> vào (không COPY ~100 GB vào layer).</p>
+  <pre data-lang="dockerfile"><script type="text/plain">
+    FROM ubuntu:22.04
+    ENV DEBIAN_FRONTEND=noninteractive
+    RUN apt-get update && apt-get install -y --no-install-recommends \
+          build-essential g++-12 cmake ninja-build libvulkan1 python3 python3-dev python3-pip python3-venv \
+          autoconf wget curl rsync unzip git git-lfs libpng-dev libtiff5-dev libjpeg-dev sudo ca-certificates \
+        && rm -rf /var/lib/apt/lists/*
+    ARG UID=1000
+    RUN useradd -m -u ${UID} builder
+    USER builder
+    WORKDIR /carla
+  </script></pre>
+  <pre data-lang="bash"><script type="text/plain">
+    docker build -t carla-buildenv --build-arg UID=$(id -u) .
+    docker run --rm -it --gpus all \
+      -v ~/UnrealEngine_4.26:/ue4 -v ~/carla:/carla \
+      -e UE4_ROOT=/ue4 -e CARLA_UE4_ROOT=/carla carla-buildenv bash -c "make PythonAPI"
+  </script></pre>
+  <p class="verify">Repo CARLA có cách tương tự (<code>Util/Docker/build.sh --dev</code> + <code>run.sh --dev</code>, mount UE4 từ host) — đọc để so sánh sau khi tự viết.</p>
+
+  <h2><span class="num">B.7</span>Tự kiểm tra &amp; hỏi chatbot</h2>
+  <div class="qa">
+    <details><summary>Vì sao <code>COPY CarlaPackage/</code> để cuối Dockerfile?</summary><p>Package thay đổi mỗi lần build lại CARLA; đặt cuối để các layer cài thư viện phía trên vẫn dùng cache.</p></details>
+    <details><summary>HEALTHCHECK bằng <code>/dev/tcp</code> kiểm tra được gì, không kiểm tra được gì?</summary><p>Chỉ biết port RPC đang mở; chưa chắc world đã load xong. Kiểm tra đầy đủ hơn là chạy client <code>get_server_version()</code>.</p></details>
+  </div>
+  <div class="prompt"><b>Prompt mẫu</b>
+    <pre data-lang="text"><script type="text/plain">
+      Đây là Dockerfile tôi tự viết để chạy CARLA 0.9.16 (bản tự build) headless trên RTX 4090:
+      <dán Dockerfile>
+      Lệnh chạy: <docker run ...>. Log container: <docker logs ...>.
+      Hãy review từng dòng: layer/cache, quyền user, Vulkan/NVIDIA capabilities, kích thước image.
+    </script></pre>
+  </div>
+  <div class="cp-box" data-module="B"></div>
+</section>
+
+<!-- ============================================================ DAY 1 CORE -->
+<section class="tab" id="tab-day1-core">
+  <div class="lesson-head">
+    <div class="kicker">NGÀY 1 · CARLA CORE</div>
+    <h1>CARLA core API: server–client, sync mode, tọa độ</h1>
+    <div class="meta"><span class="chip req">bắt buộc</span><span class="chip">≈ 4 h</span><span class="chip">C-01 … C-06</span></div>
+  </div>
+  <div class="why"><b class="lbl">Tại sao cần</b>Mọi task đều là script Python điều khiển server CARLA. Hai lỗi phá hỏng dữ liệu phổ biến nhất của người mới: <b>không dùng synchronous mode</b> và <b>nhầm hệ tọa độ</b>. Phần này xử lý cả hai.</div>
+
+  <figure class="diagram">
+    <svg viewBox="0 0 860 220" role="img" aria-label="Kiến trúc CARLA server-client">
+      <defs><marker id="ar3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="svg-arrow"/></marker></defs>
+      <rect x="20" y="20" width="360" height="180" rx="12" class="svg-acc"/>
+      <text x="200" y="45" text-anchor="middle" class="svg-t" font-weight="700">CARLA server (UE4, GPU)</text>
+      <rect x="40" y="60" width="150" height="55" rx="8" class="svg-box"/><text x="115" y="84" text-anchor="middle" class="svg-t">World</text><text x="115" y="102" text-anchor="middle" class="svg-s">map, actor, weather</text>
+      <rect x="210" y="60" width="150" height="55" rx="8" class="svg-box"/><text x="285" y="84" text-anchor="middle" class="svg-t">Physics + Render</text><text x="285" y="102" text-anchor="middle" class="svg-s">mỗi tick = Δt cố định</text>
+      <rect x="40" y="130" width="150" height="55" rx="8" class="svg-box"/><text x="115" y="154" text-anchor="middle" class="svg-t">Sensors</text><text x="115" y="172" text-anchor="middle" class="svg-s">camera, LiDAR, radar…</text>
+      <rect x="210" y="130" width="150" height="55" rx="8" class="svg-box"/><text x="285" y="154" text-anchor="middle" class="svg-t">Traffic Manager</text><text x="285" y="172" text-anchor="middle" class="svg-s">NPC autopilot · :8000</text>
+      <rect x="520" y="30" width="320" height="70" rx="10" class="svg-ok"/>
+      <text x="680" y="58" text-anchor="middle" class="svg-t" font-weight="700">Python client (script của bạn)</text>
+      <text x="680" y="80" text-anchor="middle" class="svg-s">spawn · tick() · set_transform · listen(callback)</text>
+      <rect x="520" y="130" width="320" height="70" rx="10" class="svg-warn"/>
+      <text x="680" y="158" text-anchor="middle" class="svg-t" font-weight="700">ROS 2 / Autoware / ScenarioRunner</text>
+      <text x="680" y="180" text-anchor="middle" class="svg-s">cũng là client (hoặc native ROS 2 --ros2)</text>
+      <path d="M382,70 H518" class="svg-line" marker-end="url(#ar3)" marker-start="url(#ar3)"/><text x="450" y="62" text-anchor="middle" class="svg-s">RPC :2000</text>
+      <path d="M382,100 C450,100 450,80 518,85" class="svg-line" marker-end="url(#ar3)"/><text x="452" y="118" text-anchor="middle" class="svg-s">sensor stream :2001</text>
+      <path d="M382,165 H518" class="svg-line" marker-end="url(#ar3)" marker-start="url(#ar3)"/>
+    </svg>
+    <figcaption>Server giữ trạng thái thế giới; mọi thứ khác là client.</figcaption>
+  </figure>
+
+  <h2 id="c-run"><span class="num">C.1</span>Chạy server (bản release khi chờ build)</h2>
+  <pre data-lang="bash"><script type="text/plain">
+    tmux new -s sim
+    cd ~/carla-release && ./CarlaUE4.sh -RenderOffScreen -nosound -carla-rpc-port=2000
+    # cửa sổ tmux khác (Ctrl+b c):
+    python3 --version                     # wheel 0.9.16 trên PyPI có cho 3.10, 3.11, 3.12
+    python3 -m venv ~/venvs/carla && source ~/venvs/carla/bin/activate
+    pip install carla==0.9.16 numpy pillow
+  </script></pre>
+  <div class="table-wrap"><table>
+    <tr><th>Tham số server</th><th>Ý nghĩa</th></tr>
+    <tr><td><code>-RenderOffScreen</code></td><td>Render không cần cửa sổ (headless) — vẫn dùng GPU, sensor camera vẫn có ảnh</td></tr>
+    <tr><td><code>-nosound</code></td><td>Tắt âm thanh (server không có sound card)</td></tr>
+    <tr><td><code>-carla-rpc-port=N</code></td><td>Đổi port RPC (streaming dùng port kế tiếp) — dùng khi 2000 bị chiếm</td></tr>
+    <tr><td><code>-quality-level=Low|Epic</code></td><td>Chất lượng render; Low nhẹ hơn nhiều</td></tr>
+    <tr><td><code>--ros2</code></td><td>Bật ROS 2 native (0.9.16) — Ngày 2</td></tr>
+  </table></div>
+
+  <h2 id="c-hello"><span class="num">C.2</span>Script đầu tiên: kết nối, spawn, sync, spectator, dọn dẹp</h2>
+  <pre data-lang="python"><script type="text/plain">
+    # 01_hello.py
+    import carla, random, time
+
+    client = carla.Client("localhost", 2000)
+    client.set_timeout(20.0)
+    print("client", client.get_client_version(), "| server", client.get_server_version())
+    world = client.load_world("Town03")            # load map (mất vài giây)
+    bl = world.get_blueprint_library()
+
+    # --- synchronous mode: server chỉ tiến 1 bước khi client gọi tick()
+    original = world.get_settings()
+    settings = world.get_settings()
+    settings.synchronous_mode = True
+    settings.fixed_delta_seconds = 0.05            # 20 Hz sim time
+    world.apply_settings(settings)
+    tm = client.get_trafficmanager(8000)
+    tm.set_synchronous_mode(True)
+    tm.set_random_device_seed(42)
+    random.seed(42)
+
+    actors = []
+    try:
+        bp = bl.find("vehicle.lincoln.mkz_2020")
+        bp.set_attribute("role_name", "hero")
+        spawn = random.choice(world.get_map().get_spawn_points())
+        ego = world.spawn_actor(bp, spawn); actors.append(ego)
+        ego.set_autopilot(True, tm.get_port())
+        spectator = world.get_spectator()
+
+        for i in range(400):                       # 400 tick = 20 s sim time
+            frame = world.tick()
+            t = ego.get_transform()
+            spectator.set_transform(carla.Transform(t.transform(carla.Location(x=-8, z=4)),
+                                                    carla.Rotation(pitch=-15, yaw=t.rotation.yaw)))
+            if i % 40 == 0:
+                v = ego.get_velocity()
+                print(f"frame {frame} sim_t={world.get_snapshot().timestamp.elapsed_seconds:.2f}s "
+                      f"speed={3.6 * (v.x**2 + v.y**2 + v.z**2) ** 0.5:.1f} km/h")
+    finally:
+        world.apply_settings(original)             # LUÔN trả lại async, nếu không server treo
+        tm.set_synchronous_mode(False)
+        client.apply_batch([carla.command.DestroyActor(a) for a in actors])
+        print("cleaned up")
+  </script></pre>
+  <div class="table-wrap"><table>
+    <tr><th>Đối tượng</th><th>Vai trò</th><th>Hàm hay dùng</th></tr>
+    <tr><td><code>carla.Client</code></td><td>Kết nối server</td><td><code>get_world, load_world, apply_batch_sync, get_trafficmanager, start_recorder</code></td></tr>
+    <tr><td><code>carla.World</code></td><td>Thế giới hiện tại</td><td><code>tick, spawn_actor, try_spawn_actor, get_actors, get_settings/apply_settings, set_weather, get_map, get_spectator</code></td></tr>
+    <tr><td><code>carla.Map</code></td><td>Đường (OpenDRIVE)</td><td><code>get_spawn_points, get_waypoint, generate_waypoints, transform_to_geolocation, to_opendrive</code></td></tr>
+    <tr><td><code>BlueprintLibrary</code></td><td>Danh mục thứ spawn được</td><td><code>find, filter("vehicle.*")</code>, <code>bp.set_attribute</code></td></tr>
+    <tr><td><code>Actor / Vehicle / Sensor</code></td><td>Vật thể trong thế giới</td><td><code>get_transform, set_transform, get_velocity, set_autopilot, apply_control, listen, destroy</code></td></tr>
+    <tr><td><code>Transform / Location / Rotation</code></td><td>Vị trí + hướng (mét, độ)</td><td><code>get_matrix, get_inverse_matrix, transform(loc), get_forward_vector</code></td></tr>
+  </table></div>
+
+  <h2 id="c-sync"><span class="num">C.3</span>Synchronous mode — bắt buộc khi thu data</h2>
+  <ul>
+    <li><b>Async (mặc định):</b> server chạy nhanh nhất có thể, client chậm thì mất frame; các sensor không cùng thời điểm; không tái lập được.</li>
+    <li><b>Sync:</b> mỗi <code>world.tick()</code> tiến đúng <code>fixed_delta_seconds</code>; server chờ client. Mọi sensor trong 1 tick có cùng <code>frame</code>.</li>
+    <li>Quy tắc docs: trong sync luôn dùng time-step cố định; <code>fixed_delta_seconds ≤ max_substep_delta_time × max_substeps</code> (vật lý chia bước con, nên &lt; 0.0167 s mỗi bước con).</li>
+    <li>Chỉ <b>một</b> client được gọi <code>tick()</code>. Nếu Autoware interface đang tick thì script của bạn chỉ đọc (<code>world.wait_for_tick()</code>).</li>
+    <li>Traffic Manager cũng phải sync: <code>tm.set_synchronous_mode(True)</code>.</li>
+  </ul>
+  <p class="verify">carla.readthedocs.io/en/0.9.16/adv_synchrony_timestep/</p>
+
+  <h2 id="c-coords"><span class="num">C.4</span>Hệ tọa độ: CARLA/UE vs ROS vs camera</h2>
+  <div class="coord-v" id="coordViewer"><div class="start"><span>▶ Bấm để mở mô hình 3D 3 hệ trục (kéo để xoay)</span></div></div>
+  <div class="table-wrap"><table>
+    <tr><th></th><th>CARLA / UE4</th><th>ROS (REP-103)</th><th>Camera OpenCV</th></tr>
+    <tr><td>Tay</td><td>trái</td><td>phải</td><td>phải</td></tr>
+    <tr><td>Trục</td><td>x tới, y phải, z lên</td><td>x tới, y trái, z lên</td><td>z tới, x phải, y xuống</td></tr>
+    <tr><td>Đơn vị (Python API)</td><td>mét, độ</td><td>mét, radian</td><td>pixel / mét</td></tr>
+    <tr><td>Từ CARLA sang</td><td>—</td><td><code>(x, -y, z)</code>; roll giữ, pitch → −pitch, yaw → −yaw (đổi sang rad)</td><td>điểm trong hệ sensor UE <code>(x,y,z)</code> → <code>(y, -z, x)</code></td></tr>
+  </table></div>
+  <pre data-lang="python"><script type="text/plain">
+    import math, numpy as np
+    def carla_to_ros_pose(t: "carla.Transform"):
+        l, r = t.location, t.rotation
+        return (l.x, -l.y, l.z), (math.radians(r.roll), -math.radians(r.pitch), -math.radians(r.yaw))
+
+    def ue_sensor_to_opencv(pts):          # pts: (N,3) trong hệ sensor UE
+        return np.stack([pts[:, 1], -pts[:, 2], pts[:, 0]], axis=1)
+
+    # Ma trận 4x4: sensor->world và world->sensor
+    # T_ws = np.array(sensor_transform.get_matrix()); T_sw = np.array(sensor_transform.get_inverse_matrix())
+  </script></pre>
+  <p><b>Kiểm chứng bắt buộc (C-04):</b> đặt một xe khác cách ego 10 m phía trước, 3 m bên phải (theo CARLA). Chuyển sang ROS phải ra <code>y = -3</code>; chiếu tâm xe lên camera trước phải nằm ở nửa phải ảnh.</p>
+
+  <h2 id="c-tm"><span class="num">C.5</span>Traffic Manager, NPC và weather</h2>
+  <pre data-lang="python"><script type="text/plain">
+    from carla import command as cmd
+    spawns = world.get_map().get_spawn_points(); random.shuffle(spawns)
+    bps = [b for b in bl.filter("vehicle.*") if int(b.get_attribute("number_of_wheels")) == 4]
+    batch = [cmd.SpawnActor(random.choice(bps), sp).then(cmd.SetAutopilot(cmd.FutureActor, True, tm.get_port()))
+             for sp in spawns[:30]]
+    npc_ids = [r.actor_id for r in client.apply_batch_sync(batch, True) if not r.error]
+    tm.global_percentage_speed_difference(10)       # NPC chạy chậm hơn giới hạn 10%
+
+    world.set_weather(carla.WeatherParameters.HardRainNoon)          # preset
+    w = world.get_weather(); w.sun_altitude_angle = -10; w.fog_density = 30; world.set_weather(w)  # đêm + sương
+  </script></pre>
+  <p>Weather cho bằng chứng C-06: giữ nguyên vị trí camera, chụp <code>ClearNoon</code> và <code>HardRainNoon</code> → viewer so sánh 2 ảnh.</p>
+
+  <h2 id="c-recorder"><span class="num">C.6</span>Recorder: ghi &amp; replay <span class="chip deep">đào sâu</span></h2>
+  <pre data-lang="python"><script type="text/plain">
+    client.start_recorder("/home/<USER>/work/rec/run01.log", True)   # True: ghi thêm dữ liệu chi tiết
+    # ... chạy mô phỏng ...
+    client.stop_recorder()
+    print(client.show_recorder_file_info("/home/<USER>/work/rec/run01.log", False))
+    client.replay_file("/home/<USER>/work/rec/run01.log", 0.0, 0.0, 0)  # start, duration(0=hết), follow_id
+  </script></pre>
+  <p>Recorder ghi trạng thái actor, <b>không</b> ghi dữ liệu sensor — khi replay phải gắn lại sensor để sinh dữ liệu mới. Rất hữu ích để chạy <b>cùng một đoạn giao thông</b> với nhiều layout sensor (Task 1).</p>
+
+  <h2 id="c-video"><span class="num">C.7</span>Làm video bằng chứng</h2>
+  <pre data-lang="bash"><script type="text/plain">
+    # frame PNG lưu từ camera (vd out/000123.png ...) -> MP4 H.264 nhẹ, xem được trên web
+    ffmpeg -framerate 20 -pattern_type glob -i 'out/*.png' -vf "scale=960:-2" \
+      -c:v libx264 -pix_fmt yuv420p -crf 26 -movflags +faststart C-03.mp4
+    ls -lh C-03.mp4        # giữ < 10 MB; tăng crf (28-32) hoặc giảm scale nếu lớn
+  </script></pre>
+
+  <h2><span class="num">C.8</span>Lỗi thường gặp</h2>
+  <div class="table-wrap"><table>
+    <tr><th>Triệu chứng</th><th>Nguyên nhân / cách sửa</th></tr>
+    <tr><td><code>time-out of 20000ms while waiting for the simulator</code></td><td>Server chưa lên / sai port / server đang load map. Xem log server, <code>ss -tlnp | grep 2000</code>.</td></tr>
+    <tr><td>Server "đứng hình" sau khi script crash</td><td>Còn sync mode mà không ai tick → chạy script nhỏ đặt <code>synchronous_mode=False</code>. Luôn có <code>finally</code>.</td></tr>
+    <tr><td><code>Spawn failed because of collision at spawn position</code></td><td>Điểm spawn bị chiếm → <code>try_spawn_actor</code> và thử điểm khác.</td></tr>
+    <tr><td>Xe NPC đứng im trong sync</td><td>Quên <code>tm.set_synchronous_mode(True)</code> hoặc sai port TM.</td></tr>
+    <tr><td>Actor sót lại lần chạy sau</td><td>Không destroy. Dọn: <code>for a in world.get_actors().filter('vehicle.*'): a.destroy()</code> (chỉ trên server của bạn).</td></tr>
+  </table></div>
+
+  <h2><span class="num">C.9</span>Tự kiểm tra &amp; hỏi chatbot</h2>
+  <div class="qa">
+    <details><summary>fixed_delta_seconds = 0.05 và camera <code>sensor_tick</code> = 0.1 → camera ra ảnh mỗi mấy tick?</summary><p>Mỗi 2 tick (10 Hz). <code>sensor_tick</code> = 0 nghĩa là ra dữ liệu mọi tick.</p></details>
+    <details><summary>Vì sao dùng <code>t.transform(carla.Location(x=-8, z=4))</code> cho spectator?</summary><p>Hàm chuyển một điểm từ hệ cục bộ của xe sang hệ world: "8 m phía sau, 4 m phía trên xe" bất kể xe đang quay hướng nào.</p></details>
+  </div>
+  <div class="prompt"><b>Prompt mẫu</b>
+    <pre data-lang="text"><script type="text/plain">
+      CARLA 0.9.16, Python 3.10, synchronous mode fixed_delta_seconds=0.05.
+      Đoạn code của tôi: <dán>. Hành vi mong muốn: <...>. Hành vi thực tế: <...>.
+      Giải thích theo cơ chế tick/frame của CARLA, và chỉ cách in ra frame id để kiểm chứng.
+    </script></pre>
+  </div>
+  <div class="cp-box" data-module="C"></div>
+</section>
+
+<!-- ============================================================ DAY 1 SENSOR -->
+<section class="tab" id="tab-day1-sensor">
+  <div class="lesson-head">
+    <div class="kicker">NGÀY 1 · TASK 1</div>
+    <h1>Sensor: vị trí đặt, calibration, thu data đạt chuẩn</h1>
+    <div class="meta"><span class="chip req">bắt buộc</span><span class="chip">≈ 7 h</span><span class="chip">T1-01 … T1-10</span></div>
+  </div>
+  <div class="why"><b class="lbl">Tại sao cần</b>Task 1 có hai đầu ra: (1) <b>kết luận có số liệu</b> vị trí sensor nào tốt hơn, (2) <b>dataset</b> đủ tốt để bên khác đánh giá. Họ sẽ kiểm tra đồng bộ thời gian, calib, ground truth, format — thiếu một thứ là dataset vô dụng.</div>
+
+  <figure class="diagram">
+    <svg viewBox="0 0 860 150" role="img" aria-label="Pipeline thu data">
+      <defs><marker id="ar4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="svg-arrow"/></marker></defs>
+      <g>
+        <rect x="10" y="40" width="120" height="60" rx="8" class="svg-acc"/><text x="70" y="66" text-anchor="middle" class="svg-t">world.tick()</text><text x="70" y="84" text-anchor="middle" class="svg-s">frame N</text>
+        <rect x="160" y="40" width="130" height="60" rx="8" class="svg-box"/><text x="225" y="66" text-anchor="middle" class="svg-t">callback</text><text x="225" y="84" text-anchor="middle" class="svg-s">→ queue / sensor</text>
+        <rect x="320" y="40" width="130" height="60" rx="8" class="svg-box"/><text x="385" y="66" text-anchor="middle" class="svg-t">gom frame N</text><text x="385" y="84" text-anchor="middle" class="svg-s">kiểm tra đủ sensor</text>
+        <rect x="480" y="40" width="130" height="60" rx="8" class="svg-box"/><text x="545" y="66" text-anchor="middle" class="svg-t">writer</text><text x="545" y="84" text-anchor="middle" class="svg-s">raw · GT · pose</text>
+        <rect x="640" y="40" width="90" height="60" rx="8" class="svg-warn"/><text x="685" y="66" text-anchor="middle" class="svg-t">QA</text><text x="685" y="84" text-anchor="middle" class="svg-s">report</text>
+        <rect x="760" y="40" width="90" height="60" rx="8" class="svg-ok"/><text x="805" y="66" text-anchor="middle" class="svg-t">export</text><text x="805" y="84" text-anchor="middle" class="svg-s">KITTI…</text>
+        <path d="M130,70 H158" class="svg-line" marker-end="url(#ar4)"/><path d="M290,70 H318" class="svg-line" marker-end="url(#ar4)"/><path d="M450,70 H478" class="svg-line" marker-end="url(#ar4)"/><path d="M610,70 H638" class="svg-line" marker-end="url(#ar4)"/><path d="M730,70 H758" class="svg-line" marker-end="url(#ar4)"/>
+        <text x="430" y="130" text-anchor="middle" class="svg-s">calib.json + meta.json (map, weather, seed, version) ghi 1 lần mỗi sequence</text>
+      </g>
+    </svg>
+  </figure>
+
+  <h2 id="t1-catalog"><span class="num">1.1</span>Danh mục sensor và thuộc tính quan trọng</h2>
+  <div class="table-wrap"><table>
+    <tr><th>Blueprint</th><th>Dữ liệu</th><th>Thuộc tính cần chỉnh</th></tr>
+    <tr><td><code>sensor.camera.rgb</code></td><td><code>carla.Image</code> BGRA 8-bit</td><td><code>image_size_x/y, fov, sensor_tick</code>, tham số méo ống kính, exposure</td></tr>
+    <tr><td><code>sensor.camera.depth</code></td><td>Depth mã hóa trong R,G,B</td><td>giống RGB; khoảng cách tối đa 1000 m</td></tr>
+    <tr><td><code>sensor.camera.semantic_segmentation</code></td><td>Tag lớp ở kênh R</td><td>giống RGB</td></tr>
+    <tr><td><code>sensor.camera.instance_segmentation</code></td><td>Tag lớp (R) + id đối tượng (G,B)</td><td>giống RGB</td></tr>
+    <tr><td><code>sensor.lidar.ray_cast</code></td><td><code>LidarMeasurement</code>: x,y,z,intensity (float32)</td><td><code>channels, range, points_per_second, rotation_frequency, upper_fov, lower_fov, noise_stddev, dropoff_*</code></td></tr>
+    <tr><td><code>sensor.lidar.ray_cast_semantic</code></td><td>x,y,z,cos_inc_angle,object_idx,object_tag</td><td>như LiDAR (không intensity/drop-off)</td></tr>
+    <tr><td><code>sensor.other.radar</code></td><td>velocity, azimuth, altitude, depth</td><td><code>horizontal_fov, vertical_fov, range, points_per_second</code></td></tr>
+    <tr><td><code>sensor.other.gnss</code> / <code>imu</code></td><td>lat, lon, alt / accel, gyro, compass</td><td>các <code>noise_*</code></td></tr>
+    <tr><td><code>sensor.other.collision</code>, <code>lane_invasion</code></td><td>sự kiện</td><td>— (dùng để đánh giá scenario)</td></tr>
+  </table></div>
+  <pre data-lang="python"><script type="text/plain">
+    # In mọi thuộc tính + giá trị mặc định — đừng đoán
+    bp = world.get_blueprint_library().find("sensor.lidar.ray_cast")
+    for a in bp: print(a.id, a.type, a.as_str(), a.recommended_values)
+  </script></pre>
+  <div class="callout warn"><p><b>Bẫy hay gặp:</b> <code>range</code> mặc định của LiDAR rất ngắn (in ra để xem) → đặt 50–100 m. <code>rotation_frequency</code> phải bằng <code>1 / fixed_delta_seconds</code>, nếu không mỗi frame chỉ có một phần vòng quét.</p></div>
+
+  <h2 id="t1-mount"><span class="num">1.2</span>Gắn sensor lên xe và thiết kế layout</h2>
+  <pre data-lang="python"><script type="text/plain">
+    bb = ego.bounding_box                         # extent = nửa kích thước (m), location = tâm box so với gốc actor
+    roof_z = bb.location.z + bb.extent.z          # nóc xe
+    front_x = bb.location.x + bb.extent.x         # mũi xe
+    print("xe dài", 2 * bb.extent.x, "rộng", 2 * bb.extent.y, "cao", 2 * bb.extent.z)
+
+    lidar_bp = bl.find("sensor.lidar.ray_cast")
+    for k, v in {"channels": "32", "range": "80", "points_per_second": "600000",
+                 "rotation_frequency": "20", "upper_fov": "10", "lower_fov": "-30"}.items():
+        lidar_bp.set_attribute(k, v)
+    lidar = world.spawn_actor(lidar_bp, carla.Transform(carla.Location(x=0.0, z=roof_z + 0.3)),
+                              attach_to=ego, attachment_type=carla.AttachmentType.Rigid)
+  </script></pre>
+  <div class="table-wrap"><table>
+    <tr><th>Tham chiếu</th><th>Layout</th></tr>
+    <tr><td>KITTI</td><td>1 LiDAR 64 tia trên nóc, 2 camera xám + 2 camera màu (stereo) phía trước, GPS/IMU</td></tr>
+    <tr><td>nuScenes</td><td>1 LiDAR 32 tia trên nóc, 6 camera phủ 360°, 5 radar, GPS/IMU</td></tr>
+    <tr><td>Xe thương mại</td><td>Thêm camera fisheye ở cản và gương cho vùng sát xe</td></tr>
+  </table></div>
+  <p><b>Thiết kế thí nghiệm so sánh layout</b> (T1-03, T1-10):</p>
+  <ol>
+    <li><b>Biến:</b> vị trí (x, y, z), góc (pitch, yaw), FOV, số tia. Mỗi layout mô tả bằng một file JSON (format ở <a href="#ev-types">Cách tạo bằng chứng</a>) → trang Tiến độ tự vẽ sơ đồ phủ và vùng mù.</li>
+    <li><b>Cố định:</b> map, route, seed TM, weather. Tốt nhất: ghi 1 phiên bằng Recorder rồi replay cho từng layout.</li>
+    <li><b>Metric:</b> % phủ mặt đất trong bán kính R; diện tích vùng mù sát xe; số điểm LiDAR trên mỗi object theo khoảng cách; diện tích pixel object trên camera; tỉ lệ object bị che.</li>
+    <li><b>Kết luận</b> bằng bảng + biểu đồ, nêu rõ đánh đổi (chiều cao ↔ vùng mù gần).</li>
+  </ol>
+
+  <h2 id="t1-calib"><span class="num">1.3</span>Calibration: intrinsic, extrinsic, chiếu LiDAR lên ảnh</h2>
+  <pre data-lang="python"><script type="text/plain">
+    import numpy as np
+    def intrinsic(w, h, fov_deg):
+        f = w / (2.0 * np.tan(np.radians(fov_deg) / 2.0))
+        return np.array([[f, 0, w / 2.0], [0, f, h / 2.0], [0, 0, 1]])
+
+    def project_lidar(lidar_meas, image, K):
+        """Chiếu điểm LiDAR lên ảnh. Dùng transform của CHÍNH measurement (đúng thời điểm chụp)."""
+        pts = np.frombuffer(lidar_meas.raw_data, dtype=np.float32).reshape(-1, 4)[:, :3]
+        P = np.c_[pts, np.ones(len(pts))].T                                # 4xN, hệ LiDAR (UE)
+        world = np.array(lidar_meas.transform.get_matrix()) @ P             # -> world
+        cam = np.array(image.transform.get_inverse_matrix()) @ world        # -> hệ camera (UE: x tới)
+        cv = np.array([cam[1], -cam[2], cam[0]])                            # -> OpenCV (z tới)
+        front = cv[2] > 0.5
+        uvw = K @ cv[:, front]
+        uv = (uvw[:2] / uvw[2]).T
+        depth = cv[2, front]
+        ok = (uv[:, 0] >= 0) & (uv[:, 0] < image.width) & (uv[:, 1] >= 0) & (uv[:, 1] < image.height)
+        return uv[ok], depth[ok]
+  </script></pre>
+  <p>Vẽ các điểm lên ảnh với màu theo <code>depth</code> (bằng chứng T1-02). Điểm phải "dính" đúng mép xe, cột, tường. Lệch đều → sai extrinsic; lật ngược → quên đổi trục UE→OpenCV.</p>
+
+  <h2 id="t1-collect"><span class="num">1.4</span>Pipeline thu data đồng bộ</h2>
+  <pre data-lang="python"><script type="text/plain">
+    # collect.py — khung chính (rút gọn): mỗi sensor 1 queue, gom theo frame id
+    import queue, json, time, os, numpy as np
+
+    SENSORS = {}          # name -> (actor, queue)
+    def add_sensor(name, bp_id, attrs, tf):
+        bp = bl.find(bp_id)
+        for k, v in attrs.items(): bp.set_attribute(k, str(v))
+        a = world.spawn_actor(bp, tf, attach_to=ego)
+        q = queue.Queue(maxsize=100)
+        a.listen(q.put)
+        SENSORS[name] = (a, q); actors.append(a)
+
+    add_sensor("cam_front", "sensor.camera.rgb", {"image_size_x": 1600, "image_size_y": 900, "fov": 70},
+               carla.Transform(carla.Location(x=0.8, z=1.6)))
+    add_sensor("depth_front", "sensor.camera.depth", {"image_size_x": 1600, "image_size_y": 900, "fov": 70},
+               carla.Transform(carla.Location(x=0.8, z=1.6)))
+    add_sensor("lidar_top", "sensor.lidar.ray_cast",
+               {"channels": 32, "range": 80, "points_per_second": 600000, "rotation_frequency": 20},
+               carla.Transform(carla.Location(z=2.0)))
+
+    def get_frame(frame, timeout=2.0):
+        out = {}
+        for name, (_, q) in SENSORS.items():
+            while True:
+                d = q.get(timeout=timeout)          # raise queue.Empty nếu thiếu -> phát hiện rớt frame
+                if d.frame == frame: out[name] = d; break
+                if d.frame > frame: raise RuntimeError(f"{name}: nhảy frame {d.frame} > {frame}")
+        return out
+
+    os.makedirs("seq01", exist_ok=True)
+    timing = open("seq01/timing.csv", "w"); timing.write("frame,sim_t,proc_ms,n_sensors\n")
+    for _ in range(20): world.tick()                # warm-up: bỏ vài frame đầu
+    for q in [q for _, q in SENSORS.values()]:
+        while not q.empty(): q.get()
+    for i in range(600):
+        t0 = time.perf_counter()
+        frame = world.tick()
+        data = get_frame(frame)
+        snap = world.get_snapshot()
+        data["cam_front"].save_to_disk(f"seq01/cam_front/{frame:06d}.jpg")
+        pts = np.frombuffer(data["lidar_top"].raw_data, dtype=np.float32).reshape(-1, 4)
+        os.makedirs("seq01/lidar_top", exist_ok=True); pts.tofile(f"seq01/lidar_top/{frame:06d}.bin")
+        # ... depth, GT boxes, ego pose -> json ...
+        timing.write(f"{frame},{snap.timestamp.elapsed_seconds:.3f},{(time.perf_counter()-t0)*1000:.1f},{len(data)}\n")
+  </script></pre>
+  <p><code>timing.csv</code> chính là dữ liệu cho biểu đồ bằng chứng T1-05. Ghi file chậm → dùng JPEG thay PNG, hoặc đẩy việc ghi sang thread pool (vẫn giữ <code>get_frame</code> trên main loop).</p>
+  <pre data-lang="python"><script type="text/plain">
+    def decode_depth(img):   # carla.Image depth -> mét (float32 HxW)
+        a = np.frombuffer(img.raw_data, dtype=np.uint8).reshape(img.height, img.width, 4).astype(np.float32)
+        b, g, r = a[..., 0], a[..., 1], a[..., 2]                 # BGRA!
+        return (r + g * 256 + b * 256 * 256) / (256 ** 3 - 1) * 1000.0
+  </script></pre>
+
+  <h2 id="t1-gt"><span class="num">1.5</span>Ground truth: 3D box → 2D box, lọc che khuất</h2>
+  <pre data-lang="python"><script type="text/plain">
+    def gt_boxes(world, image, depth_m, K, max_dist=60.0):
+        T_cw = np.array(image.transform.get_inverse_matrix())
+        cam_loc = image.transform.location
+        objs = []
+        for a in list(world.get_actors().filter("vehicle.*")) + list(world.get_actors().filter("walker.*")):
+            if a.id == ego.id or a.get_location().distance(cam_loc) > max_dist: continue
+            verts = a.bounding_box.get_world_vertices(a.get_transform())      # 8 carla.Location
+            P = np.array([[v.x, v.y, v.z, 1.0] for v in verts]).T
+            c = T_cw @ P; cv = np.array([c[1], -c[2], c[0]])
+            if (cv[2] <= 0.5).any(): continue                                  # có đỉnh sau camera
+            uvw = K @ cv; uv = (uvw[:2] / uvw[2]).T
+            x1, y1 = uv.min(0); x2, y2 = uv.max(0)
+            if x2 < 0 or y2 < 0 or x1 >= image.width or y1 >= image.height: continue
+            # che khuất: so depth tại tâm các đỉnh với depth ảnh
+            vis = 0
+            for (u, v), z in zip(uv, cv[2]):
+                ui, vi = int(np.clip(u, 0, image.width - 1)), int(np.clip(v, 0, image.height - 1))
+                vis += depth_m[vi, ui] > z - 0.5
+            if vis == 0: continue                                              # bị che hoàn toàn
+            objs.append({"class": a.type_id.split(".")[0], "id": a.id,
+                         "box2d": [float(max(x1, 0)), float(max(y1, 0)), float(min(x2, image.width)), float(min(y2, image.height))],
+                         "corners2d": uv.round(1).tolist(), "visible_corners": int(vis),
+                         "distance_m": round(a.get_location().distance(cam_loc), 1)})
+        return {"image_size": [image.width, image.height], "objects": objs}
+  </script></pre>
+  <p>File JSON này đúng format viewer <b>bbox-overlay</b> của trang Tiến độ (T1-06). Chính xác hơn: dùng camera <code>instance_segmentation</code> để đếm pixel thật sự nhìn thấy của từng object (kênh G,B mã hóa id — kiểm chứng id giải mã khớp <code>actor.id</code> trước khi tin).</p>
+
+  <h2 id="t1-formats"><span class="num">1.6</span>Format dataset — vì bên đánh giá chưa chốt</h2>
+  <div class="callout"><p><b>Chiến lược:</b> luôn ghi một format <b>thô chuẩn của mình</b> (mỗi frame: file sensor + <code>gt.json</code> + <code>pose.json</code>; mỗi sequence: <code>calib.json</code>, <code>meta.json</code>) rồi viết <b>converter</b> sang format họ yêu cầu. Đổi format không cần chạy lại mô phỏng.</p></div>
+  <div class="table-wrap"><table>
+    <tr><th>Format</th><th>Cấu trúc</th><th>Hệ tọa độ</th></tr>
+    <tr><td><b>KITTI</b></td><td><code>image_2/*.png, velodyne/*.bin</code> (float32 x,y,z,i), <code>label_2/*.txt</code>, <code>calib/*.txt</code> (P0–P3, R0_rect, Tr_velo_to_cam, Tr_imu_to_velo)</td><td>Label trong hệ camera: x phải, y xuống, z tới; LiDAR: x tới, y trái, z lên</td></tr>
+    <tr><td><b>nuScenes</b></td><td>Bảng JSON liên kết: scene, sample, sample_data, ego_pose, calibrated_sensor, sample_annotation, instance, category…</td><td>Global + ego + sensor (tay phải), quaternion</td></tr>
+    <tr><td><b>rosbag2 (MCAP)</b></td><td>Message ROS theo thời gian: <code>sensor_msgs/Image, PointCloud2, Imu, NavSatFix</code>, <code>/tf</code></td><td>REP-103</td></tr>
+    <tr><td><b>ASAM OpenLABEL</b></td><td>JSON chuẩn công nghiệp cho annotation đa sensor: objects, frames, streams, coordinate_systems</td><td>Khai báo tường minh trong file</td></tr>
+  </table></div>
+  <pre data-lang="text"><script type="text/plain">
+    # label_2/000123.txt — 1 dòng / object
+    # type trunc occl alpha  x1     y1     x2     y2     h    w    l    x     y    z     rot_y
+    Car    0.00  0    -1.57 612.3  180.4  702.1  250.9  1.50 1.90 4.50 -3.40 1.65 14.20 -1.57
+  </script></pre>
+  <pre data-lang="python"><script type="text/plain">
+    # Điểm LiDAR CARLA (tay trái) -> velodyne KITTI (tay phải): lật y
+    pts = np.frombuffer(meas.raw_data, dtype=np.float32).reshape(-1, 4).copy()
+    pts[:, 1] *= -1
+    pts.astype(np.float32).tofile(f"velodyne/{idx:06d}.bin")
+    # Tr_velo_to_cam: đổi trục (x tới,y trái,z lên) -> (x phải,y xuống,z tới) rồi cộng offset lắp đặt
+    R_axes = np.array([[0, -1, 0], [0, 0, -1], [1, 0, 0]])
+  </script></pre>
+
+  <h2 id="t1-ply"><span class="num">1.7</span>Point cloud .ply cho bằng chứng 3D</h2>
+  <pre data-lang="python"><script type="text/plain">
+    import numpy as np
+    def write_ply(path, xyz, label=None, intensity=None):
+        """PLY nhị phân; viewer trang Tiến độ đọc được thuộc tính label/intensity."""
+        fields = [("x", "<f4"), ("y", "<f4"), ("z", "<f4")]
+        if intensity is not None: fields.append(("intensity", "<f4"))
+        if label is not None: fields.append(("label", "u1"))
+        rec = np.zeros(len(xyz), dtype=fields)
+        rec["x"], rec["y"], rec["z"] = xyz.T
+        if intensity is not None: rec["intensity"] = intensity
+        if label is not None: rec["label"] = label
+        types = {"<f4": "float", "u1": "uchar"}
+        head = "ply\nformat binary_little_endian 1.0\n" + f"element vertex {len(rec)}\n" + \
+               "".join(f"property {types[t]} {n}\n" for n, t in fields) + "end_header\n"
+        with open(path, "wb") as f: f.write(head.encode()); f.write(rec.tobytes())
+
+    # giảm mẫu voxel 0.1 m bằng numpy (không cần Open3D)
+    def voxel_down(xyz, v=0.1):
+        _, idx = np.unique(np.floor(xyz / v).astype(np.int64), axis=0, return_index=True)
+        return idx
+    pts = np.frombuffer(meas.raw_data, dtype=np.float32).reshape(-1, 4)
+    keep = voxel_down(pts[:, :3], 0.1)
+    write_ply("T1-04_roof.ply", pts[keep, :3], intensity=pts[keep, 3])
+  </script></pre>
+
+  <h2 id="t1-qa"><span class="num">1.8</span>QA — "đạt chuẩn" nghĩa là gì</h2>
+  <div class="table-wrap"><table>
+    <tr><th>Kiểm tra</th><th>Tiêu chí pass (ví dụ, thống nhất với bên đánh giá)</th></tr>
+    <tr><td>Đủ frame</td><td>Mọi sensor có đủ N frame, frame id liên tục</td></tr>
+    <tr><td>Thời gian</td><td>Δ sim time giữa 2 frame = fixed_delta ± 1e-6</td></tr>
+    <tr><td>File</td><td>Không file rỗng; ảnh đúng kích thước; số điểm LiDAR trong khoảng kỳ vọng</td></tr>
+    <tr><td>Calib</td><td>Chiếu LiDAR lên ảnh khớp (kiểm tra ngẫu nhiên 10 frame)</td></tr>
+    <tr><td>GT</td><td>Box trong ảnh, kích thước dương, class hợp lệ; phân bố class không lệch bất thường</td></tr>
+    <tr><td>Toàn vẹn</td><td><code>sha256sum</code> mọi file → <code>checksums.txt</code></td></tr>
+    <tr><td>Tài liệu</td><td><code>README/datasheet</code>: mục đích, version CARLA, map, weather, seed, sensor + calib, format, số lượng, hạn chế đã biết, cách tái tạo</td></tr>
+  </table></div>
+  <pre data-lang="bash"><script type="text/plain">
+    cd seq01 && find . -type f ! -name checksums.txt -print0 | xargs -0 sha256sum > checksums.txt
+    sha256sum -c checksums.txt | grep -v ": OK" || echo "ALL OK"
+  </script></pre>
+
+  <h2><span class="num">1.9</span>Lỗi thường gặp</h2>
+  <div class="table-wrap"><table>
+    <tr><th>Triệu chứng</th><th>Nguyên nhân / cách sửa</th></tr>
+    <tr><td>LiDAR chỉ có nửa/một phần vòng</td><td><code>rotation_frequency ≠ 1/fixed_delta</code></td></tr>
+    <tr><td>Vài frame đầu ảnh đen/mờ</td><td>Auto-exposure chưa ổn định → warm-up 20 tick và bỏ</td></tr>
+    <tr><td><code>queue.Empty</code> / frame lệch</td><td>Sensor có <code>sensor_tick</code> khác; quá tải → giảm độ phân giải/points_per_second</td></tr>
+    <tr><td>RAM tăng dần</td><td>Queue không giới hạn, giữ tham chiếu đến measurement cũ</td></tr>
+    <tr><td>Depth sai hoàn toàn</td><td>Quên thứ tự BGRA</td></tr>
+    <tr><td>Box lệch khỏi xe</td><td>Dùng <code>actor.get_transform()</code> của camera thay vì <code>image.transform</code>, hoặc sai đổi trục</td></tr>
+  </table></div>
+
+  <h2><span class="num">1.10</span>Tự kiểm tra &amp; hỏi chatbot</h2>
+  <div class="qa">
+    <details><summary>Camera 1600×900, fov 70° → fx bằng bao nhiêu?</summary><p>fx = 1600 / (2·tan(35°)) ≈ 1142.5 px; cx = 800, cy = 450.</p></details>
+    <details><summary>Vì sao dùng <code>measurement.transform</code> thay vì <code>sensor.get_transform()</code>?</summary><p><code>get_transform()</code> trả vị trí hiện tại của actor (có thể đã sang tick khác), còn <code>measurement.transform</code> là vị trí đúng lúc dữ liệu được tạo.</p></details>
+  </div>
+  <div class="prompt"><b>Prompt mẫu</b>
+    <pre data-lang="text"><script type="text/plain">
+      Tôi cần chuyển dataset CARLA của mình sang format <KITTI / nuScenes / OpenLABEL>.
+      Format thô hiện tại: <mô tả thư mục + 1 file json mẫu>. Hệ tọa độ CARLA là tay trái (x tới, y phải, z lên).
+      Viết converter Python và liệt kê chỗ phải đổi trục/đơn vị; kèm cách kiểm chứng bằng cách chiếu box lên ảnh.
+    </script></pre>
+  </div>
+  <div class="cp-box" data-module="T1"></div>
+</section>
+
+<!-- ============================================================ DAY 2 ROS -->
+<section class="tab" id="tab-day2-ros">
+  <div class="lesson-head">
+    <div class="kicker">NGÀY 2 · ROS 2</div>
+    <h1>ROS 2 Humble từ số 0 (đủ để làm Autoware)</h1>
+    <div class="meta"><span class="chip req">bắt buộc</span><span class="chip">≈ 3 h</span><span class="chip">R-01 … R-04</span></div>
+  </div>
+  <div class="why"><b class="lbl">Tại sao cần</b>Autoware là tập hợp hàng trăm node ROS 2. Khi tích hợp lỗi, bạn debug bằng <code>ros2 topic</code>, <code>tf2</code>, QoS, sim time — không phải bằng code CARLA.</div>
+
+  <h2 id="r-setup"><span class="num">R.1</span>Có ROS 2 ở đâu?</h2>
+  <p>Humble chạy trên Ubuntu 22.04. Nếu server chưa cài và bạn không có sudo, dùng container (image ROS là image nền, không phải image CARLA):</p>
+  <pre data-lang="bash"><script type="text/plain">
+    docker run -it --rm --net=host --name ros-$USER \
+      -e ROS_DOMAIN_ID=<SỐ_RIÊNG_0-101> osrf/ros:humble-desktop bash
+    # trong container:
+    source /opt/ros/humble/setup.bash
+    ros2 run demo_nodes_cpp talker        # cửa sổ khác: ros2 run demo_nodes_py listener
+  </script></pre>
+  <div class="callout warn"><p><b>Lab dùng chung mạng:</b> DDS tự tìm node khác trong cùng mạng. Đặt <code>ROS_DOMAIN_ID</code> riêng (hỏi mentor quy ước) để không "nói chuyện" nhầm với máy người khác.</p></div>
+
+  <h2><span class="num">R.2</span>Khái niệm</h2>
+  <div class="table-wrap"><table>
+    <tr><th>Khái niệm</th><th>Giải thích</th></tr>
+    <tr><td>Node</td><td>Một process làm một việc (vd driver LiDAR, localization)</td></tr>
+    <tr><td>Topic / message</td><td>Kênh publish–subscribe có kiểu (<code>sensor_msgs/msg/PointCloud2</code>)</td></tr>
+    <tr><td>Service / action</td><td>Gọi–trả lời / việc dài có phản hồi (vd điều hướng)</td></tr>
+    <tr><td>Parameter / launch</td><td>Cấu hình node / file khởi động nhiều node (<code>.launch.py</code>, <code>.launch.xml</code>)</td></tr>
+    <tr><td>Workspace / colcon</td><td>Thư mục <code>src/</code> chứa package; <code>colcon build</code> → <code>install/</code>; <code>source install/setup.bash</code></td></tr>
+    <tr><td>QoS</td><td>reliable/best_effort, depth, durability. Sub reliable không nhận từ pub best_effort</td></tr>
+    <tr><td>tf2</td><td>Cây biến đổi tọa độ theo thời gian: <code>map → odom → base_link → sensor</code></td></tr>
+    <tr><td>Sim time</td><td>Simulator publish <code>/clock</code>; node chạy <code>use_sim_time:=true</code> để dùng giờ mô phỏng</td></tr>
+  </table></div>
+
+  <h2 id="r-cli"><span class="num">R.3</span>CLI phải thuộc</h2>
+  <pre data-lang="bash"><script type="text/plain">
+    ros2 node list
+    ros2 topic list -t                         # kèm kiểu message
+    ros2 topic info -v /sensing/lidar/top/pointcloud_raw   # xem QoS của pub/sub
+    ros2 topic hz /clock                       # tần số
+    ros2 topic echo /tf --once
+    ros2 topic bw <topic>                      # băng thông
+    ros2 interface show sensor_msgs/msg/PointCloud2
+    ros2 param list /<node>
+    ros2 run tf2_ros tf2_echo base_link <sensor_frame>
+    ros2 run tf2_tools view_frames             # sinh frames.pdf
+    rqt_graph                                  # cần GUI
+  </script></pre>
+
+  <h2 id="r-node"><span class="num">R.4</span>Viết một node Python nhỏ</h2>
+  <pre data-lang="python"><script type="text/plain">
+    # count_points.py — đếm điểm trong PointCloud2, QoS best_effort cho sensor
+    import rclpy
+    from rclpy.node import Node
+    from rclpy.qos import qos_profile_sensor_data
+    from sensor_msgs.msg import PointCloud2
+
+    class Counter(Node):
+        def __init__(self):
+            super().__init__("count_points")
+            self.declare_parameter("topic", "/carla/hero/lidar")
+            topic = self.get_parameter("topic").value
+            self.create_subscription(PointCloud2, topic, self.cb, qos_profile_sensor_data)
+        def cb(self, msg):
+            n = msg.width * msg.height
+            self.get_logger().info(f"{msg.header.frame_id} t={msg.header.stamp.sec}.{msg.header.stamp.nanosec:09d} points={n}")
+
+    rclpy.init(); rclpy.spin(Counter())
+  </script></pre>
+  <pre data-lang="bash"><script type="text/plain">
+    python3 count_points.py --ros-args -p topic:=<topic thật> -p use_sim_time:=true
+  </script></pre>
+
+  <h2 id="r-bag"><span class="num">R.5</span>rosbag2</h2>
+  <pre data-lang="bash"><script type="text/plain">
+    sudo apt install ros-humble-rosbag2-storage-mcap      # Humble mặc định sqlite3; MCAP cần plugin
+    ros2 bag record -s mcap -o run01 /clock /tf /tf_static <topic sensor...>
+    ros2 bag info run01
+    ros2 bag play run01 --clock                            # phát lại kèm /clock
+  </script></pre>
+
+  <h2 id="r-viz"><span class="num">R.6</span>Xem dữ liệu từ xa: Foxglove</h2>
+  <pre data-lang="bash"><script type="text/plain">
+    sudo apt install ros-humble-foxglove-bridge        # hoặc cài trong container ROS
+    ros2 launch foxglove_bridge foxglove_bridge_launch.xml port:=8765
+  </script></pre>
+  <p>Trên Windows: SSH đã có <code>LocalForward 8765</code> (Ngày 0) → mở Foxglove Studio → <i>Open connection</i> → <code>ws://localhost:8765</code>. Thêm panel 3D (point cloud, tf), Image, Plot. Chụp màn hình làm bằng chứng R-02 / R-04.</p>
+
+  <h2 id="r-native"><span class="num">R.7</span>CARLA 0.9.16 → ROS 2 native</h2>
+  <p>0.9.16 publish ROS 2 trực tiếp từ server, không cần bridge:</p>
+  <pre data-lang="bash"><script type="text/plain">
+    ./CarlaUE4.sh -RenderOffScreen -nosound --ros2
+    # ví dụ đi kèm repo/bản release:
+    cd PythonAPI/examples/ros2 && ls        # ros2_native.py, stack.json, run_rviz.sh ...
+    python3 ros2_native.py --file stack.json
+  </script></pre>
+  <ul>
+    <li>Đặt tên topic qua thuộc tính sensor <code>ros_name</code> (vd <code>bp.set_attribute('ros_name', 'front_camera')</code> → topic dạng <code>/carla/&lt;role_name&gt;/front_camera/...</code>). <b>Đọc <code>ros2_native.py</code> của đúng version</b> để biết cách bật sensor cho ROS — đây là nguồn chuẩn nhất.</li>
+    <li>Native dùng DDS; phía ROS để mặc định <code>rmw_fastrtps_cpp</code> và cùng <code>ROS_DOMAIN_ID</code>. Container ROS phải <code>--net=host</code>.</li>
+  </ul>
+  <p class="verify">carla.org/2025/09/16/release-0.9.16/ · github.com/carla-simulator/carla/tree/0.9.16/PythonAPI/examples/ros2</p>
+
+  <h2><span class="num">R.8</span>Lỗi thường gặp</h2>
+  <div class="table-wrap"><table>
+    <tr><th>Triệu chứng</th><th>Nguyên nhân / cách sửa</th></tr>
+    <tr><td>Không thấy topic nào</td><td>Khác <code>ROS_DOMAIN_ID</code>, khác RMW, container không <code>--net=host</code>, chưa <code>source setup.bash</code></td></tr>
+    <tr><td>Có topic nhưng echo không ra gì</td><td>QoS không tương thích → <code>ros2 topic info -v</code>, dùng <code>--qos-reliability best_effort</code></td></tr>
+    <tr><td>rviz: <i>No transform from X to Y</i></td><td>Thiếu tf / static tf; kiểm tra bằng <code>view_frames</code></td></tr>
+    <tr><td>Dữ liệu "quá cũ", tf extrapolation</td><td>Node không dùng sim time</td></tr>
+  </table></div>
+  <div class="prompt"><b>Prompt mẫu</b>
+    <pre data-lang="text"><script type="text/plain">
+      ROS 2 Humble trong Docker (--net=host), ROS_DOMAIN_ID=<n>. Output của:
+      ros2 topic list -t: <dán>   ros2 topic info -v <topic>: <dán>
+      Triệu chứng: <...>. Hãy chẩn đoán theo thứ tự: discovery -> QoS -> tf -> time.
+    </script></pre>
+  </div>
+  <div class="cp-box" data-module="R"></div>
+</section>
+
+<!-- ============================================================ DAY 2 AUTOWARE -->
+<section class="tab" id="tab-day2-aw">
+  <div class="lesson-head">
+    <div class="kicker">NGÀY 2 · TASK 2</div>
+    <h1>Tích hợp Autoware với CARLA</h1>
+    <div class="meta"><span class="chip req">bắt buộc</span><span class="chip">≈ 5 h</span><span class="chip">T2-01 … T2-05</span></div>
+  </div>
+  <div class="why"><b class="lbl">Tại sao cần</b>Đây là Task 2: CARLA đóng vai "thế giới thật" (sensor + xe), Autoware là "tài xế". Hiểu dòng dữ liệu hai chiều giúp bạn biết lỗi nằm ở phía nào.</div>
+
+  <figure class="diagram">
+    <svg viewBox="0 0 860 250" role="img" aria-label="Kiến trúc Autoware với CARLA">
+      <defs><marker id="ar5" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="svg-arrow"/></marker></defs>
+      <rect x="10" y="80" width="150" height="90" rx="10" class="svg-acc"/><text x="85" y="112" text-anchor="middle" class="svg-t" font-weight="700">CARLA server</text><text x="85" y="134" text-anchor="middle" class="svg-s">xe ego + sensor</text><text x="85" y="152" text-anchor="middle" class="svg-s">sync 20 Hz</text>
+      <rect x="190" y="80" width="140" height="90" rx="10" class="svg-warn"/><text x="260" y="112" text-anchor="middle" class="svg-t" font-weight="700">carla interface</text><text x="260" y="134" text-anchor="middle" class="svg-s">sensor → topic</text><text x="260" y="152" text-anchor="middle" class="svg-s">control_cmd → xe</text>
+      <g>
+        <rect x="360" y="20" width="110" height="50" rx="8" class="svg-box"/><text x="415" y="50" text-anchor="middle" class="svg-t">Sensing</text>
+        <rect x="490" y="20" width="120" height="50" rx="8" class="svg-box"/><text x="550" y="42" text-anchor="middle" class="svg-t">Localization</text><text x="550" y="60" text-anchor="middle" class="svg-s">NDT + PCD map</text>
+        <rect x="630" y="20" width="110" height="50" rx="8" class="svg-box"/><text x="685" y="50" text-anchor="middle" class="svg-t">Perception</text>
+        <rect x="630" y="100" width="110" height="50" rx="8" class="svg-box"/><text x="685" y="122" text-anchor="middle" class="svg-t">Planning</text><text x="685" y="140" text-anchor="middle" class="svg-s">Lanelet2 map</text>
+        <rect x="490" y="100" width="120" height="50" rx="8" class="svg-box"/><text x="550" y="130" text-anchor="middle" class="svg-t">Control</text>
+        <rect x="360" y="100" width="110" height="50" rx="8" class="svg-box"/><text x="415" y="122" text-anchor="middle" class="svg-t">Vehicle IF</text><text x="415" y="140" text-anchor="middle" class="svg-s">lệnh lái</text>
+        <rect x="490" y="180" width="250" height="50" rx="8" class="svg-ok"/><text x="615" y="202" text-anchor="middle" class="svg-t">Map: lanelet2_map.osm + pointcloud_map.pcd</text><text x="615" y="220" text-anchor="middle" class="svg-s">cùng hệ tọa độ gốc</text>
+      </g>
+      <path d="M160,125 H188" class="svg-line" marker-end="url(#ar5)"/>
+      <path d="M330,105 C345,105 345,45 358,45" class="svg-line" marker-end="url(#ar5)"/>
+      <path d="M470,45 H488" class="svg-line" marker-end="url(#ar5)"/><path d="M610,45 H628" class="svg-line" marker-end="url(#ar5)"/>
+      <path d="M685,70 V98" class="svg-line" marker-end="url(#ar5)"/><path d="M630,125 H612" class="svg-line" marker-end="url(#ar5)"/><path d="M490,125 H472" class="svg-line" marker-end="url(#ar5)"/>
+      <path d="M360,140 C345,140 345,150 332,150" class="svg-line" marker-end="url(#ar5)"/>
+      <path d="M615,180 V152" class="svg-line" marker-end="url(#ar5)" stroke-dasharray="4 3"/><path d="M560,180 C560,120 540,90 545,72" class="svg-line" marker-end="url(#ar5)" stroke-dasharray="4 3"/>
+    </svg>
+    <figcaption>Tên topic cụ thể thay đổi theo version Autoware — luôn xác nhận bằng <code>ros2 topic list</code>.</figcaption>
+  </figure>
+
+  <h2 id="aw-arch"><span class="num">2.1</span>Kiến trúc Autoware trong 5 khối</h2>
+  <div class="table-wrap"><table>
+    <tr><th>Khối</th><th>Làm gì</th><th>Cần gì từ CARLA</th></tr>
+    <tr><td>Sensing</td><td>Tiền xử lý point cloud, ảnh, IMU, GNSS</td><td>Topic sensor đúng frame_id, đúng tf</td></tr>
+    <tr><td>Localization</td><td>Khớp LiDAR với pointcloud map (NDT) → pose xe</td><td>PCD map đúng Town, pose ban đầu</td></tr>
+    <tr><td>Perception</td><td>Phát hiện, theo dõi, dự đoán object</td><td>Point cloud / ảnh đủ chất lượng</td></tr>
+    <tr><td>Planning</td><td>Route trên Lanelet2 → quỹ đạo tránh vật cản, dừng đèn</td><td>Lanelet2 map khớp đường CARLA</td></tr>
+    <tr><td>Control + Vehicle IF</td><td>Bám quỹ đạo → lệnh ga/phanh/lái</td><td>Interface áp lệnh lên xe CARLA, trả lại vận tốc/góc lái</td></tr>
+  </table></div>
+
+  <h2 id="aw-version"><span class="num">2.2</span>Vấn đề version — đọc trước khi làm</h2>
+  <div class="callout danger">
+    <p><b>README của <code>autoware_carla_interface</code></b> (autoware_universe, nhánh main) ghi đã kiểm thử với <b>CARLA 0.9.15</b>, ROS 2 Humble, Ubuntu 22.04. Không nhắc tới 0.9.16. Team dùng 0.9.16.</p>
+    <p><b>Hỏi mentor ngay:</b> team đã có setup Autoware + 0.9.16 chạy được chưa? Nếu chưa, chọn một hướng:</p>
+    <ol>
+      <li><b>Thử thẳng với 0.9.16:</b> cài wheel <code>carla==0.9.16</code> (có cho Python 3.10 của Humble) vào môi trường Autoware, chạy và ghi lại lỗi API nếu có.</li>
+      <li><b>Chạy một server 0.9.15 riêng</b> cho việc tích hợp (vẫn tự đóng gói Docker như Module B).</li>
+      <li><b>Native ROS 2 của 0.9.16</b> + remap topic/frame sang tên Autoware cần (tốn công, linh hoạt).</li>
+    </ol>
+  </div>
+  <p class="verify">raw.githubusercontent.com/autowarefoundation/autoware_universe/main/simulator/autoware_carla_interface/README.md</p>
+
+  <h2 id="aw-setup"><span class="num">2.3</span>Dựng Autoware + map Town01</h2>
+  <ol>
+    <li><b>Cài Autoware</b> theo tài liệu chính thức (autowarefoundation.github.io → Installation): cài từ source trên Ubuntu 22.04 hoặc dùng Docker của Autoware. Hỏi mentor team đang dùng cách nào và tag nào — Autoware thay đổi nhanh.</li>
+    <li><b>Build workspace</b> (README interface):
+      <pre data-lang="bash"><script type="text/plain">
+        cd ~/autoware
+        colcon build --symlink-install --cmake-args -DCMAKE_BUILD_TYPE=Release
+        source install/setup.bash
+      </script></pre></li>
+    <li><b>Map Town01</b> cho Autoware: tải từ <code>bitbucket.org/carla-simulator/autoware-contents</code> (thư mục <code>maps/</code>). Đặt đúng cấu trúc:
+      <pre data-lang="text"><script type="text/plain">
+        $HOME/autoware_data/maps/Town01/
+          ├── pointcloud_map.pcd
+          ├── lanelet2_map.osm
+          └── map_projector_info.yaml      # nội dung: projector_type: Local
+      </script></pre>
+      README ghi các map này đã <b>lật trục y</b> so với CARLA (tay trái → tay phải).</li>
+  </ol>
+
+  <h2 id="aw-run"><span class="num">2.4</span>Chạy: CARLA → Autoware → xe tự lái</h2>
+  <div class="lab steps">
+    <div class="step"><b>Server CARLA</b> (tmux window 0): <code>./CarlaUE4.sh -RenderOffScreen -nosound</code> (hoặc container Module B). Không có script nào khác đang tick.</div>
+    <div class="step"><b>Autoware</b> (window 1):
+      <pre data-lang="bash"><script type="text/plain">
+        ros2 launch autoware_launch e2e_simulator.launch.xml \
+          map_path:=$HOME/autoware_data/maps/Town01 \
+          vehicle_model:=sample_vehicle sensor_model:=carla_sensor_kit simulator_type:=carla
+      </script></pre></div>
+    <div class="step"><b>Camera theo xe</b> (window 2): <code>ros2 run autoware_carla_interface spectator_follow</code></div>
+    <div class="step"><b>Localize:</b> trong rviz, nếu xe lệch lúc đầu → bấm <b>Init by GNSS</b> (known issue trong README). Kiểm tra point cloud khớp map.</div>
+    <div class="step"><b>Goal &amp; engage:</b> công cụ <i>2D Goal Pose</i> đặt đích trên làn → đợi route + trajectory hiện → chuyển chế độ lái sang <b>AUTO</b> (panel Operation Mode). Quay video (T2-03).</div>
+  </div>
+  <div class="table-wrap"><table>
+    <tr><th>Tham số interface</th><th>Mặc định</th></tr>
+    <tr><td><code>host / port / timeout</code></td><td>localhost / 2000 / 20</td></tr>
+    <tr><td><code>ego_vehicle_role_name</code></td><td>ego_vehicle</td></tr>
+    <tr><td><code>vehicle_type</code></td><td>vehicle.toyota.prius</td></tr>
+    <tr><td><code>spawn_point</code></td><td>[x, y, z, roll, pitch, yaw]</td></tr>
+    <tr><td><code>sync_mode / fixed_delta_seconds</code></td><td>True / 0.05</td></tr>
+    <tr><td><code>carla_map</code></td><td>Town01</td></tr>
+    <tr><td><code>use_light_weight_sensor_mapping</code></td><td>True</td></tr>
+  </table></div>
+  <p>Đổi <code>fixed_delta_seconds</code> thì phải đổi tần số quay LiDAR tương ứng (README).</p>
+
+  <h2 id="aw-kit"><span class="num">2.5</span>Sensor kit: đưa layout Task 1 vào Autoware</h2>
+  <ul>
+    <li>Sensor kit mặc định: <code>carla_sensor_kit_description</code> (6 camera + LiDAR…), cấu hình trong <code>sensor_kit_calibration.yaml</code> và <code>config/sensor_mapping.yaml</code> của interface.</li>
+    <li>Extrinsic trong yaml Autoware là hệ <b>tay phải</b>, gốc <code>base_link</code> = <b>tâm cầu sau</b>, góc bằng <b>radian</b>. Vị trí gắn trong CARLA tính từ gốc actor (tâm xe) theo tay trái.</li>
+  </ul>
+  <pre data-lang="python"><script type="text/plain">
+    import math
+    def carla_mount_to_autoware(loc, rot, rear_axle_x):
+        """loc/rot: carla.Location/Rotation so với gốc actor. rear_axle_x: x (m) của tâm cầu sau so với gốc actor."""
+        return {"x": loc.x - rear_axle_x, "y": -loc.y, "z": loc.z,
+                "roll": math.radians(rot.roll), "pitch": -math.radians(rot.pitch), "yaw": -math.radians(rot.yaw)}
+
+    # vị trí bánh xe: physics control (kiểm chứng đơn vị! thường là cm, hệ world)
+    wheels = ego.get_physics_control().wheels
+    for w in wheels: print(w.position)
+  </script></pre>
+  <p>Kiểm chứng T2-04: sau khi đổi yaml, <code>ros2 run tf2_ros tf2_echo base_link &lt;sensor_frame&gt;</code> phải ra đúng giá trị bạn tính, và point cloud trong rviz phải khớp map.</p>
+
+  <h2 id="aw-debug"><span class="num">2.6</span>Checklist debug tích hợp</h2>
+  <div class="table-wrap"><table>
+    <tr><th>Triệu chứng</th><th>Kiểm tra theo thứ tự</th></tr>
+    <tr><td>Autoware không nhận sensor</td><td><code>ros2 topic hz</code> topic LiDAR → frame_id → tf tới base_link → QoS</td></tr>
+    <tr><td>Localization nhảy / trôi</td><td>Init by GNSS → đúng map Town → tần số LiDAR đủ → sim time</td></tr>
+    <tr><td>Không có trajectory</td><td>Goal nằm trên lanelet hợp lệ, đúng chiều làn → localization đã ổn định</td></tr>
+    <tr><td>Xe không chạy dù có trajectory</td><td>Chưa AUTO/engage → topic control có dữ liệu? → interface áp lệnh?</td></tr>
+    <tr><td>Rất chậm, rớt frame</td><td>VRAM (CARLA + perception), <code>-quality-level=Low</code>, <code>use_light_weight_sensor_mapping</code></td></tr>
+    <tr><td>Hai thứ cùng tick</td><td>Tắt sync ở script khác; chỉ interface tick</td></tr>
+  </table></div>
+  <div class="prompt"><b>Prompt mẫu</b>
+    <pre data-lang="text"><script type="text/plain">
+      Autoware (main, ROS 2 Humble) + autoware_carla_interface + CARLA <0.9.15/0.9.16>, map Town01.
+      Lệnh launch: <dán>. Triệu chứng: <...>. Log node lỗi: <dán>. ros2 topic hz <topic>: <dán>.
+      Hãy liệt kê các giả thuyết theo thứ tự khả năng và lệnh kiểm chứng từng giả thuyết.
+    </script></pre>
+  </div>
+  <div class="cp-box" data-module="T2"></div>
+</section>
+
+<!-- ============================================================ DAY 3 -->
+<section class="tab" id="tab-day3">
+  <div class="lesson-head">
+    <div class="kicker">NGÀY 3 · TASK 3</div>
+    <h1>Scenario từ dữ liệu thật: map GPS/OSM, asset Blender, replay</h1>
+    <div class="meta"><span class="chip req">bắt buộc</span><span class="chip">≈ 8 h</span><span class="chip">T3-01 … T3-10</span></div>
+  </div>
+  <div class="why"><b class="lbl">Tại sao cần</b>Tái tạo lại một tình huống đã ghi ngoài đời (đã kiểm định + gán nhãn) trong mô phỏng để thử self-driving stack nhiều lần, thay đổi điều kiện. Ba mảnh ghép: <b>đường</b> (map), <b>vật thể</b> (asset), <b>hành vi</b> (quỹ đạo).</div>
+
+  <figure class="diagram">
+    <svg viewBox="0 0 860 260" role="img" aria-label="Luồng Task 3">
+      <defs><marker id="ar6" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="svg-arrow"/></marker></defs>
+      <g>
+        <text x="10" y="30" class="svg-s" font-weight="700">MAP</text>
+        <rect x="60" y="10" width="110" height="40" rx="7" class="svg-box"/><text x="115" y="35" text-anchor="middle" class="svg-t">GPS log</text>
+        <rect x="190" y="10" width="120" height="40" rx="7" class="svg-box"/><text x="250" y="35" text-anchor="middle" class="svg-t">bbox → OSM</text>
+        <rect x="330" y="10" width="120" height="40" rx="7" class="svg-box"/><text x="390" y="35" text-anchor="middle" class="svg-t">Osm2Odr</text>
+        <rect x="470" y="10" width="140" height="40" rx="7" class="svg-acc"/><text x="540" y="35" text-anchor="middle" class="svg-t">.xodr → CARLA</text>
+        <rect x="630" y="10" width="210" height="40" rx="7" class="svg-warn"/><text x="735" y="35" text-anchor="middle" class="svg-t">Lanelet2 + PCD (Autoware)</text>
+        <path d="M170,30 H188" class="svg-line" marker-end="url(#ar6)"/><path d="M310,30 H328" class="svg-line" marker-end="url(#ar6)"/><path d="M450,30 H468" class="svg-line" marker-end="url(#ar6)"/><path d="M610,30 H628" class="svg-line" marker-end="url(#ar6)"/>
+        <text x="10" y="110" class="svg-s" font-weight="700">ASSET</text>
+        <rect x="60" y="90" width="110" height="40" rx="7" class="svg-box"/><text x="115" y="115" text-anchor="middle" class="svg-t">Blender</text>
+        <rect x="190" y="90" width="120" height="40" rx="7" class="svg-box"/><text x="250" y="115" text-anchor="middle" class="svg-t">FBX + texture</text>
+        <rect x="330" y="90" width="120" height="40" rx="7" class="svg-box"/><text x="390" y="115" text-anchor="middle" class="svg-t">Import/Pkg.json</text>
+        <rect x="470" y="90" width="140" height="40" rx="7" class="svg-acc"/><text x="540" y="115" text-anchor="middle" class="svg-t">make import</text>
+        <rect x="630" y="90" width="210" height="40" rx="7" class="svg-ok"/><text x="735" y="115" text-anchor="middle" class="svg-t">blueprint static.prop.*</text>
+        <path d="M170,110 H188" class="svg-line" marker-end="url(#ar6)"/><path d="M310,110 H328" class="svg-line" marker-end="url(#ar6)"/><path d="M450,110 H468" class="svg-line" marker-end="url(#ar6)"/><path d="M610,110 H628" class="svg-line" marker-end="url(#ar6)"/>
+        <text x="10" y="190" class="svg-s" font-weight="700">HÀNH VI</text>
+        <rect x="60" y="170" width="110" height="40" rx="7" class="svg-box"/><text x="115" y="195" text-anchor="middle" class="svg-t">annotation</text>
+        <rect x="190" y="170" width="120" height="40" rx="7" class="svg-box"/><text x="250" y="195" text-anchor="middle" class="svg-t">lat/lon → x,y</text>
+        <rect x="330" y="170" width="120" height="40" rx="7" class="svg-box"/><text x="390" y="195" text-anchor="middle" class="svg-t">nội suy</text>
+        <rect x="470" y="170" width="140" height="40" rx="7" class="svg-acc"/><text x="540" y="187" text-anchor="middle" class="svg-t">replay / .xosc</text><text x="540" y="203" text-anchor="middle" class="svg-s">ScenarioRunner</text>
+        <rect x="630" y="170" width="210" height="40" rx="7" class="svg-ok"/><text x="735" y="195" text-anchor="middle" class="svg-t">ego Autoware + metric</text>
+        <path d="M170,190 H188" class="svg-line" marker-end="url(#ar6)"/><path d="M310,190 H328" class="svg-line" marker-end="url(#ar6)"/><path d="M450,190 H468" class="svg-line" marker-end="url(#ar6)"/><path d="M610,190 H628" class="svg-line" marker-end="url(#ar6)"/>
+        <text x="430" y="245" text-anchor="middle" class="svg-s">Task 3 làm trên UE4 (0.9.16): bản 0.10.0 (UE5) chưa hỗ trợ import OpenDRIVE.</text>
+      </g>
+    </svg>
+  </figure>
+
+  <h2 id="t3-gps"><span class="num">3.1</span>GPS → GeoJSON → bbox</h2>
+  <pre data-lang="python"><script type="text/plain">
+    # gps_to_geojson.py — input CSV: time,lat,lon (sửa theo format thật của team)
+    import csv, json, math
+    rows = [(float(r["time"]), float(r["lat"]), float(r["lon"])) for r in csv.DictReader(open("gps.csv"))]
+    def dist(a, b):                      # mét, xấp xỉ equirectangular (đủ cho vài km)
+        k = 111320.0
+        return math.hypot((b[2] - a[2]) * k * math.cos(math.radians(a[1])), (b[1] - a[1]) * k)
+    clean = [rows[0]]
+    for p in rows[1:]:                   # bỏ điểm nhảy > 50 m/s
+        dt = p[0] - clean[-1][0]
+        if dt > 0 and dist(clean[-1], p) / dt < 50: clean.append(p)
+    coords = [[lon, lat] for _, lat, lon in clean]          # GeoJSON: [lon, lat] !
+    json.dump({"type": "FeatureCollection", "features": [{"type": "Feature",
+               "properties": {"name": "GPS trace", "stroke": "#cf222e", "points": True},
+               "geometry": {"type": "LineString", "coordinates": coords}}]}, open("trace.geojson", "w"))
+    lats, lons = [c[1] for c in coords], [c[0] for c in coords]
+    m = 200 / 111320.0                                       # đệm ~200 m
+    print(f"bbox (S,W,N,E) = {min(lats)-m:.6f},{min(lons)-m:.6f},{max(lats)+m:.6f},{max(lons)+m:.6f}")
+  </script></pre>
+  <p><code>trace.geojson</code> đưa thẳng vào viewer <b>map</b> (T3-01). Mở trên trang Tiến độ để xem trace có nằm trên đường thật không.</p>
+
+  <h2 id="t3-osm"><span class="num">3.2</span>Tải &amp; làm sạch OSM</h2>
+  <pre data-lang="text"><script type="text/plain">
+    // query.overpassql — thay S,W,N,E bằng bbox ở trên
+    [out:xml][timeout:90];
+    ( way["highway"~"motorway|trunk|primary|secondary|tertiary|unclassified|residential|.*_link"](S,W,N,E); );
+    (._; >;);
+    out body;
+  </script></pre>
+  <pre data-lang="bash"><script type="text/plain">
+    curl -s -o area.osm --data-urlencode "data@query.overpassql" https://overpass-api.de/api/interpreter
+    ls -lh area.osm && grep -c "<way" area.osm
+  </script></pre>
+  <ul>
+    <li>Mở <code>area.osm</code> bằng <b>JOSM</b> để xem và sửa: nối đường đứt, bỏ đường không cần, kiểm tra tag <code>lanes</code>, <code>oneway</code> (Osm2Odr dùng để sinh số làn/chiều).</li>
+    <li>Giữ vùng nhỏ: chỉ khu scenario + đệm. Map lớn = nhiều junction lỗi, load chậm.</li>
+  </ul>
+
+  <h2 id="t3-odr"><span class="num">3.3</span>OSM → OpenDRIVE → CARLA</h2>
+  <pre data-lang="python"><script type="text/plain">
+    import carla, io
+    osm_data = io.open("area.osm", encoding="utf-8").read()
+    settings = carla.Osm2OdrSettings()
+    settings.set_osm_way_types(["motorway", "motorway_link", "trunk", "trunk_link", "primary", "primary_link",
+                                "secondary", "secondary_link", "tertiary", "tertiary_link", "unclassified", "residential"])
+    settings.generate_traffic_lights = True
+    settings.all_junctions_with_traffic_lights = True
+    settings.set_traffic_light_excluded_way_types(["motorway_link"])
+    # các trường khác: use_offsets, offset_x, offset_y, default_lane_width (4.0), elevation_layer_height, center_map, proj_string
+    xodr = carla.Osm2Odr.convert(osm_data, settings)
+    open("area.xodr", "w", encoding="utf-8").write(xodr)
+
+    client = carla.Client("localhost", 2000); client.set_timeout(60.0)
+    world = client.generate_opendrive_world(xodr, carla.OpendriveGenerationParameters(
+        vertex_distance=2.0, max_road_length=500.0, wall_height=0.0,
+        additional_width=0.6, smooth_junctions=True, enable_mesh_visibility=True))
+    wps = world.get_map().generate_waypoints(2.0)
+    for w in wps: world.debug.draw_point(w.transform.location + carla.Location(z=0.3), 0.08, carla.Color(0, 255, 0), 60.0)
+    print(len(wps), "waypoints")
+  </script></pre>
+  <p>Hoặc dùng công cụ có sẵn: <code>cd PythonAPI/util &amp;&amp; python3 config.py --osm-path=area.osm</code> (hoặc <code>-x=area.xodr</code>). Map sinh kiểu này chỉ có mặt đường đơn giản — đủ để chạy xe, Autoware, scenario. Map đẹp (nhà, cây, vạch) phải dựng mesh và import qua UE4 editor (RoadRunner / <code>make import</code> với cặp <code>.fbx</code> + <code>.xodr</code>).</p>
+  <p class="verify">carla.readthedocs.io/en/0.9.16/tuto_G_openstreetmap/</p>
+
+  <h2 id="t3-geo"><span class="num">3.4</span>Georeference: lat/lon ↔ tọa độ CARLA</h2>
+  <p>CARLA có <code>map.transform_to_geolocation(location)</code> (hướng xuôi) và cảm biến GNSS dùng cùng phép chuyển. Để so với GPS thật một cách nhất quán, hãy <b>dựng phép ngược bằng chính hàm này</b>:</p>
+  <pre data-lang="python"><script type="text/plain">
+    import numpy as np
+    m = world.get_map()
+    xs, ys = np.meshgrid(np.linspace(-300, 300, 13), np.linspace(-300, 300, 13))
+    samples = []
+    for x, y in zip(xs.ravel(), ys.ravel()):
+        g = m.transform_to_geolocation(carla.Location(x=float(x), y=float(y), z=0))
+        samples.append((g.latitude, g.longitude, x, y))
+    S = np.array(samples)
+    A = np.c_[S[:, 0], S[:, 1], np.ones(len(S))]                      # [lat, lon, 1]
+    coef, *_ = np.linalg.lstsq(A, S[:, 2:4], rcond=None)              # affine lat/lon -> x,y
+    resid = np.abs(A @ coef - S[:, 2:4]).max()
+    print("sai số fit lớn nhất (m):", resid)                          # phải rất nhỏ trong vùng vài trăm mét
+
+    def latlon_to_carla(lat, lon):
+        x, y = np.array([lat, lon, 1.0]) @ coef
+        return carla.Location(x=float(x), y=float(y), z=0.0)
+  </script></pre>
+  <p>Bằng chứng T3-04: chuyển đường CARLA (waypoint) ngược ra lat/lon, xuất GeoJSON cùng với GPS thật → viewer bản đồ chồng hai đường; tính sai số trung bình.</p>
+
+  <h2 id="t3-aw-map"><span class="num">3.5</span>Map cho Autoware từ map mới <span class="chip deep">đào sâu</span></h2>
+  <ul>
+    <li><b>Pointcloud map (.pcd):</b> chạy xe khắp map với LiDAR, biến đổi mỗi scan sang hệ map bằng pose ground truth, gộp, voxel downsample, lưu <code>.pcd</code> (Open3D <code>o3d.io.write_point_cloud</code>). Nhớ lật y sang tay phải giống map Town01 của Autoware.</li>
+    <li><b>Lanelet2 (.osm):</b> vẽ bằng công cụ <i>Vector Map Builder</i> (TIER IV, trên web) dựa trên pointcloud map, hoặc thử công cụ chuyển OpenDRIVE → Lanelet2 (vd CommonRoad Scenario Designer) rồi kiểm tra kỹ. Map phải cùng gốc với PCD; <code>map_projector_info.yaml</code> đặt <code>projector_type: Local</code> như Town01.</li>
+  </ul>
+
+  <h2 id="t3-blender"><span class="num">3.6</span>Blender → CARLA</h2>
+  <h3>Blender tối thiểu cho việc này</h3>
+  <div class="table-wrap"><table>
+    <tr><th>Việc</th><th>Cách làm</th></tr>
+    <tr><td>Xoay / zoom / dịch khung nhìn</td><td>Chuột giữa / lăn chuột / <kbd>Shift</kbd>+chuột giữa</td></tr>
+    <tr><td>Di chuyển / xoay / co giãn</td><td><kbd>G</kbd> / <kbd>R</kbd> / <kbd>S</kbd> (+ <kbd>X</kbd>/<kbd>Y</kbd>/<kbd>Z</kbd> để khóa trục)</td></tr>
+    <tr><td>Xem/nhập kích thước thật</td><td><kbd>N</kbd> → tab Item → Dimensions (mét)</td></tr>
+    <tr><td>Chốt biến đổi</td><td><kbd>Ctrl</kbd>+<kbd>A</kbd> → All Transforms (bắt buộc trước khi export)</td></tr>
+    <tr><td>Gốc (pivot)</td><td>Đặt ở <b>tâm đáy</b> vật: Object → Set Origin; vật đứng trên mặt đất z = 0</td></tr>
+  </table></div>
+  <div class="lab steps">
+    <h3>Lab: asset hiệu chuẩn trước, asset thật sau</h3>
+    <div class="step">Tạo khối hộp 1 × 1 × 1 m có một mũi tên chỉ hướng +X của Blender. Export FBX (Selected Objects, Apply Transform). Import vào CARLA theo bước dưới, đặt cạnh một xe chuẩn → kiểm tra <b>kích thước</b> (không bị ×100 hay ÷100) và <b>hướng</b> (mũi tên trùng hướng tiến của CARLA). Chỉnh tùy chọn export đến khi đúng, <b>ghi lại cấu hình</b> — dùng cho mọi asset sau.</div>
+    <div class="step">Texture đặt tên theo quy ước docs: <code>*_Diff.png</code> (màu), <code>*_Norm.png</code> (normal), <code>*_Spec.png</code>.</div>
+    <div class="step">Tạo package import:
+      <pre data-lang="text"><script type="text/plain">
+        carla/Import/Package01/
+          ├── Package01.json
+          └── Props/Prop01/
+                ├── Prop01.fbx
+                ├── Prop01_Diff.png
+                └── Prop01_Norm.png
+      </script></pre>
+      <pre data-lang="json"><script type="text/plain">
+        {
+          "maps": [],
+          "props": [
+            { "name": "MyProp01", "size": "medium", "source": "./Props/Prop01/Prop01.fbx", "tag": "Building" }
+          ]
+        }
+      </script></pre>
+      <code>size</code>: tiny / small / medium / big / huge. <code>tag</code>: semantic tag (hiện trong camera semantic). Tên package không được trùng.</div>
+    <div class="step">Import + đóng gói (bản source build):
+      <pre data-lang="bash"><script type="text/plain">
+        cd ~/carla && make import 2>&1 | tee ~/logs/import.log
+        make package ARGS="--package=Package01"      # hoặc make launch để thử trong editor
+      </script></pre></div>
+    <div class="step">Tìm và spawn:
+      <pre data-lang="python"><script type="text/plain">
+        print([b.id for b in world.get_blueprint_library().filter("static.prop.*") if "myprop" in b.id.lower()])
+        prop = world.spawn_actor(world.get_blueprint_library().find("<id tìm được>"),
+                                 carla.Transform(carla.Location(x=..., y=..., z=0.1)))
+      </script></pre></div>
+  </div>
+  <ul>
+    <li>Bản <b>release</b> không cook được asset mới; chỉ nhận package đã cook (bằng source build hoặc Docker monolith của CARLA) qua <code>cd Util &amp;&amp; ./ImportAssets.sh</code>.</li>
+    <li><b>Xe</b> phức tạp hơn nhiều: cần skeletal mesh có xương bánh xe, blueprint vật lý — xem tài liệu <i>Add a new vehicle</i> của CARLA khi cần (đào sâu).</li>
+  </ul>
+  <p class="verify">carla/0.9.16 Docs/tuto_A_add_props.md, tuto_M_add_map_source.md</p>
+
+  <h2 id="t3-replay"><span class="num">3.7</span>Replay quỹ đạo từ annotation</h2>
+  <pre data-lang="python"><script type="text/plain">
+    import math, numpy as np
+    # track: list (t, x, y, yaw_deg) đã chuyển sang hệ CARLA (qua latlon_to_carla nếu dữ liệu là GPS)
+    def interp_pose(track, t):
+        ts = [p[0] for p in track]
+        if t <= ts[0] or t >= ts[-1]: return None
+        i = np.searchsorted(ts, t) - 1
+        (t0, x0, y0, h0), (t1, x1, y1, h1) = track[i], track[i + 1]
+        a = (t - t0) / (t1 - t0)
+        dh = (h1 - h0 + 180) % 360 - 180                      # xử lý quay qua ±180°
+        return x0 + a * (x1 - x0), y0 + a * (y1 - y0), h0 + a * dh
+
+    actors = {}
+    for tid, tr in tracks.items():                             # spawn trước, tắt vật lý
+        bp = bl.find("vehicle.audi.a2" if cls[tid] == "car" else "walker.pedestrian.0001")
+        a = world.try_spawn_actor(bp, carla.Transform(carla.Location(x=tr[0][1], y=tr[0][2], z=50)))
+        if a: a.set_simulate_physics(False); actors[tid] = a
+
+    log = open("traj.csv", "w"); log.write("t,x_ref,y_ref,x_sim,y_sim\n")
+    t = 0.0
+    while t < end_time:
+        for tid, a in actors.items():
+            p = interp_pose(tracks[tid], t)
+            if p is None: continue
+            loc = carla.Location(x=p[0], y=p[1], z=0)
+            loc.z = world.get_map().get_waypoint(loc, project_to_road=True).transform.location.z + 0.05
+            a.set_transform(carla.Transform(loc, carla.Rotation(yaw=p[2])))
+        world.tick(); t += settings.fixed_delta_seconds
+        if "ped01" in actors:
+            p = interp_pose(tracks["ped01"], t); l = actors["ped01"].get_location()
+            if p: log.write(f"{t:.2f},{p[0]:.3f},{p[1]:.3f},{l.x:.3f},{l.y:.3f}\n")
+  </script></pre>
+  <p><code>traj.csv</code> đúng format viewer <b>trajectory</b> (T3-08): viewer vẽ quỹ đạo thật vs replay và sai số theo thời gian.</p>
+
+  <h2 id="t3-xosc"><span class="num">3.8</span>OpenSCENARIO + ScenarioRunner</h2>
+  <pre data-lang="bash"><script type="text/plain">
+    git clone -b v0.9.16 https://github.com/carla-simulator/scenario_runner.git ~/scenario_runner
+    cd ~/scenario_runner && pip install -r requirements.txt       # trong venv có carla==0.9.16
+    export CARLA_ROOT=~/carla-release SCENARIO_RUNNER_ROOT=~/scenario_runner
+    python scenario_runner.py --openscenario my_cutin.xosc --sync --output --json
+  </script></pre>
+  <pre data-lang="xml"><script type="text/plain">
+    <?xml version="1.0" encoding="UTF-8"?>
+    <OpenSCENARIO>
+      <FileHeader revMajor="1" revMinor="0" date="2026-09-20T00:00:00" description="Replay pedestrian" author="me"/>
+      <ParameterDeclarations/>
+      <CatalogLocations/>
+      <RoadNetwork><LogicFile filepath="Town01"/><SceneGraphFile filepath=""/></RoadNetwork>
+      <Entities>
+        <ScenarioObject name="hero">
+          <Vehicle name="vehicle.lincoln.mkz_2020" vehicleCategory="car">
+            <ParameterDeclarations/><Performance maxSpeed="69.4" maxAcceleration="200" maxDeceleration="10.0"/>
+            <BoundingBox><Center x="1.5" y="0.0" z="0.9"/><Dimensions width="2.1" length="4.5" height="1.8"/></BoundingBox>
+            <Axles><FrontAxle maxSteering="0.5" wheelDiameter="0.6" trackWidth="1.8" positionX="3.1" positionZ="0.3"/>
+                   <RearAxle maxSteering="0.0" wheelDiameter="0.6" trackWidth="1.8" positionX="0.0" positionZ="0.3"/></Axles>
+            <Properties><Property name="type" value="ego_vehicle"/></Properties>
+          </Vehicle>
+        </ScenarioObject>
+        <ScenarioObject name="ped01">
+          <Pedestrian name="walker.pedestrian.0001" model="walker.pedestrian.0001" mass="80" pedestrianCategory="pedestrian">
+            <ParameterDeclarations/><BoundingBox><Center x="0" y="0" z="0.9"/><Dimensions width="0.5" length="0.5" height="1.8"/></BoundingBox><Properties/>
+          </Pedestrian>
+        </ScenarioObject>
+      </Entities>
+      <Storyboard>
+        <Init><Actions>
+          <Private entityRef="hero"><PrivateAction><TeleportAction><Position>
+            <WorldPosition x="190" y="133" z="0.3" h="0"/></Position></TeleportAction></PrivateAction></Private>
+          <Private entityRef="ped01"><PrivateAction><TeleportAction><Position>
+            <WorldPosition x="230" y="128" z="0.5" h="1.57"/></Position></TeleportAction></PrivateAction></Private>
+        </Actions></Init>
+        <Story name="S"><Act name="A"><ManeuverGroup name="MG" maximumExecutionCount="1">
+          <Actors selectTriggeringEntities="false"><EntityRef entityRef="ped01"/></Actors>
+          <Maneuver name="M"><Event name="E" priority="overwrite">
+            <Action name="follow"><PrivateAction><RoutingAction><FollowTrajectoryAction>
+              <Trajectory name="annot" closed="false"><ParameterDeclarations/><Shape><Polyline>
+                <Vertex time="0.0"><Position><WorldPosition x="230" y="128" z="0.5" h="1.57"/></Position></Vertex>
+                <Vertex time="4.0"><Position><WorldPosition x="230" y="136" z="0.5" h="1.57"/></Position></Vertex>
+              </Polyline></Shape></Trajectory>
+              <TimeReference><Timing domainAbsoluteRelative="relative" scale="1.0" offset="0.0"/></TimeReference>
+              <TrajectoryFollowingMode followingMode="position"/>
+            </FollowTrajectoryAction></RoutingAction></PrivateAction></Action>
+            <StartTrigger><ConditionGroup><Condition name="near" delay="0" conditionEdge="rising"><ByEntityCondition>
+              <TriggeringEntities triggeringEntitiesRule="any"><EntityRef entityRef="hero"/></TriggeringEntities>
+              <EntityCondition><DistanceCondition value="25" freespace="false" alongRoute="false" rule="lessThan">
+                <Position><WorldPosition x="230" y="128" z="0"/></Position></DistanceCondition></EntityCondition>
+            </ByEntityCondition></Condition></ConditionGroup></StartTrigger>
+          </Event></Maneuver></ManeuverGroup>
+          <StartTrigger><ConditionGroup><Condition name="t0" delay="0" conditionEdge="rising"><ByValueCondition>
+            <SimulationTimeCondition value="0" rule="greaterThan"/></ByValueCondition></Condition></ConditionGroup></StartTrigger>
+        </Act></Story>
+        <StopTrigger><ConditionGroup><Condition name="end" delay="0" conditionEdge="rising"><ByValueCondition>
+          <SimulationTimeCondition value="40" rule="greaterThan"/></ByValueCondition></Condition></ConditionGroup></StopTrigger>
+      </Storyboard>
+    </OpenSCENARIO>
+  </script></pre>
+  <ul>
+    <li>Tọa độ trong ví dụ chỉ để minh họa — thay bằng tọa độ thật của map bạn. <b>OpenSCENARIO/OpenDRIVE dùng hệ tay phải</b>, CARLA tay trái: kiểm chứng bằng cách teleport một xe tới <code>WorldPosition</code> đã biết rồi in <code>actor.get_transform()</code> từ Python.</li>
+    <li>Ego do Autoware lái: dùng <code>--waitForEgo</code> và cho tên/role của ego khớp nhau (interface mặc định <code>ego_vehicle</code>) — thử và kiểm chứng trên máy.</li>
+    <li>Kết quả criteria in ra khi dùng <code>--output</code>; lưu file bằng <code>--json</code> / <code>--junit</code> + <code>--outputDir</code>.</li>
+    <li>ScenarioRunner phải cùng version với CARLA (v0.9.16); py-trees &gt; 0.8 không được hỗ trợ.</li>
+  </ul>
+  <p class="verify">github.com/carla-simulator/scenario_runner (tag v0.9.16), Docs/openscenario_support.md</p>
+
+  <h2 id="t3-metrics"><span class="num">3.9</span>Đánh giá scenario</h2>
+  <pre data-lang="python"><script type="text/plain">
+    collisions = []
+    col = world.spawn_actor(bl.find("sensor.other.collision"), carla.Transform(), attach_to=ego)
+    col.listen(lambda e: collisions.append((e.frame, e.other_actor.type_id)))
+
+    def ttc(ego, other):                  # time-to-collision theo đường thẳng, None nếu không tiến lại gần
+        p = other.get_location() - ego.get_location()
+        v = ego.get_velocity() - other.get_velocity()
+        d = math.hypot(p.x, p.y); closing = (p.x * v.x + p.y * v.y) / max(d, 1e-6)
+        return d / closing if closing > 0.1 else None
+  </script></pre>
+  <p>Báo cáo tối thiểu (T3-10): có va chạm không, % hoàn thành route, TTC nhỏ nhất, vi phạm làn (<code>sensor.other.lane_invasion</code>), video.</p>
+
+  <h2><span class="num">3.10</span>Lỗi thường gặp</h2>
+  <div class="table-wrap"><table>
+    <tr><th>Triệu chứng</th><th>Nguyên nhân / cách sửa</th></tr>
+    <tr><td>Map sinh ra thiếu đường / junction lạ</td><td>OSM thiếu nối, tag lanes/oneway sai → sửa trong JOSM; thu nhỏ vùng</td></tr>
+    <tr><td>Object replay lơ lửng / chìm</td><td>z lấy sai → chiếu xuống waypoint/mặt đất mỗi tick</td></tr>
+    <tr><td>Object "nhảy" ở ±180°</td><td>Nội suy góc không xử lý wrap-around</td></tr>
+    <tr><td>Asset to/nhỏ gấp 100 lần hoặc nằm nghiêng</td><td>Sai đơn vị/trục khi export → dùng asset hiệu chuẩn</td></tr>
+    <tr><td>Scenario đối xứng qua trục x</td><td>Quên đổi tay phải ↔ tay trái (y → −y, heading → −heading)</td></tr>
+  </table></div>
+  <div class="prompt"><b>Prompt mẫu</b>
+    <pre data-lang="text"><script type="text/plain">
+      Tôi dựng map CARLA 0.9.16 bằng carla.Osm2Odr từ file OSM (bbox <...>), load bằng generate_opendrive_world.
+      Annotation gốc có: <trường dữ liệu, tần số, hệ tọa độ>. Tôi cần replay 3 object trong sync mode 20 Hz.
+      Hãy chỉ ra các bước chuyển tọa độ và các điểm dễ sai; kèm cách đo sai số replay.
+    </script></pre>
+  </div>
+  <div class="cp-box" data-module="T3"></div>
+</section>
+
+<!-- ============================================================ UE5 -->
+<section class="tab" id="tab-ue5">
+  <div class="lesson-head">
+    <div class="kicker">ĐÀO SÂU</div>
+    <h1>CARLA 0.10.0 (Unreal Engine 5) — khác gì UE4?</h1>
+    <div class="meta"><span class="chip deep">đào sâu</span><span class="chip">U5-01</span></div>
+  </div>
+  <div class="why"><b class="lbl">Tại sao cần</b>Team đang dùng cả hai, mentor bảo ưu tiên UE4. Bạn cần biết đủ để không đem nhầm quy trình UE4 sang UE5 và ngược lại.</div>
+  <div class="table-wrap"><table>
+    <tr><th></th><th>0.9.16 (UE4)</th><th>0.10.0 (UE5)</th></tr>
+    <tr><td>Engine</td><td>Unreal Engine 4.26 (fork CARLA)</td><td>Unreal Engine 5.5 (fork CARLA)</td></tr>
+    <tr><td>Map có sẵn</td><td>Gói chính: Town01–05, Town10; gói AdditionalMaps: thêm các Town khác (06, 07, 11, 12, 13, 15…)</td><td>Chỉ Town10 và một map mỏ (off-road)</td></tr>
+    <tr><td>Đổi weather</td><td class="pill-ok">Có</td><td class="pill-no">Chưa port</td></tr>
+    <tr><td>Import OpenDRIVE / OSM</td><td class="pill-ok">Có</td><td class="pill-no">Chưa port</td></tr>
+    <tr><td>Large maps, digital twin, một số co-sim</td><td class="pill-ok">Có</td><td class="pill-no">Chưa port</td></tr>
+    <tr><td>VRAM</td><td>≥ 6 GB</td><td>Khuyến nghị ≥ 16 GB (&lt; 12 GB có thể không load được Town10)</td></tr>
+    <tr><td>OS / ổ đĩa</td><td>Ubuntu 20.04/22.04 · ~130 GB</td><td>Ubuntu 22.04 · UE5 fork ~225 GB</td></tr>
+    <tr><td>Python</td><td>wheel PyPI 3.10–3.12</td><td>3.8–3.12</td></tr>
+    <tr><td>Build</td><td><code>make PythonAPI / launch / package</code></td><td>CMake + Ninja: <code>CarlaSetup.sh</code>, <code>cmake --build Build --target ...</code></td></tr>
+    <tr><td>Chạy + ROS 2</td><td><code>./CarlaUE4.sh --ros2</code></td><td><code>./CarlaUnreal.sh --ros2</code></td></tr>
+  </table></div>
+  <pre data-lang="bash"><script type="text/plain">
+    # Build 0.10.0 (tham khảo — chỉ làm khi mentor yêu cầu)
+    git clone -b ue5-dev https://github.com/carla-simulator/carla.git CarlaUE5
+    cd CarlaUE5 && ./CarlaSetup.sh --interactive
+    export CARLA_UNREAL_ENGINE_PATH=<ĐƯỜNG_DẪN_UE5>
+    cmake -G Ninja -S . -B Build --toolchain=$PWD/CMake/Toolchain.cmake -DCMAKE_BUILD_TYPE=Release -DENABLE_ROS2=ON
+    cmake --build Build
+    cmake --build Build --target carla-python-api-install
+    cmake --build Build --target launch      # hoặc --target package
+  </script></pre>
+  <div class="callout"><p><b>Hệ quả cho team:</b> Task 3 (map từ OSM/OpenDRIVE) phải làm trên UE4. UE5 hợp với thí nghiệm cần hình ảnh chân thực trên Town10. RTX 4090 (24 GB) đủ VRAM cho 0.10.0, nhưng chạy song song với Autoware sẽ chật.</p></div>
+  <p class="verify">carla.org/2024/12/19/release-0.10.0/ · carla-ue5.readthedocs.io/en/latest/build_linux_ue5/</p>
+  <div class="cp-box" data-module="U5"></div>
+</section>
+
+<!-- ============================================================ EVIDENCE -->
+<section class="tab" id="tab-evidence">
+  <div class="lesson-head">
+    <div class="kicker">TRA CỨU</div>
+    <h1>Cách tạo &amp; nộp bằng chứng</h1>
+    <div class="meta"><span class="chip">dùng cho mọi checkpoint</span></div>
+  </div>
+  <div class="why"><b class="lbl">Tại sao cần</b>Mentor không có thời gian đọc code của bạn. Một video 10 giây, một point cloud xoay được, một biểu đồ có số liệu chứng minh nhanh hơn mọi lời giải thích — và chính bạn cũng dùng nó để ôn lại.</div>
+
+  <h2 id="ev-flow"><span class="num">E.1</span>Quy trình</h2>
+  <ol>
+    <li>Làm lab trên server → sinh file bằng chứng (ảnh, mp4, ply, csv, geojson, log).</li>
+    <li><code>scp</code> về máy Windows vào <code>evidence/&lt;MÃ&gt;/</code> trong repo (vd <code>evidence/T1-04/roof.ply</code>).</li>
+    <li>Mở <a href="progress.html">trang Tiến độ</a> (chạy cục bộ: <code>python -m http.server 8000</code> trong thư mục repo → <code>http://localhost:8000/progress.html</code>) → thẻ checkpoint → <b>✎ Cập nhật</b>: chọn cấp độ, ngày, ghi chú "vướng gì / sửa thế nào", thêm bằng chứng → <b>Lưu</b>.</li>
+    <li>Bấm <b>Tải progress.json</b> → chép đè <code>data/progress.json</code>.</li>
+    <li>Kiểm tra bí mật (E.3) → <code>git add</code> → <code>commit</code> → <code>push</code>. Khoảng 1 phút sau GitHub Pages cập nhật.</li>
+  </ol>
+  <p>Muốn xem bằng chứng "đạt" trông thế nào: bấm <b>Xem mẫu</b> trên trang Tiến độ.</p>
+
+  <h2 id="ev-types"><span class="num">E.2</span>Các loại bằng chứng và cách tạo</h2>
+  <div class="table-wrap"><table>
+    <tr><th>Loại</th><th>JSON trong progress.json</th><th>Tạo bằng</th></tr>
+    <tr><td>Ảnh</td><td><code>{"type":"image","src":"evidence/C-04/x.jpg","caption":"..."}</code></td><td><code>image.save_to_disk</code>, chụp màn hình (≤ 2 MB)</td></tr>
+    <tr><td>Video</td><td><code>{"type":"video","src":"evidence/C-03/a.mp4","poster":"..."}</code></td><td>ffmpeg (C.7), ≤ 10 MB</td></tr>
+    <tr><td>So sánh 2 ảnh</td><td><code>{"type":"image-compare","before":"a.jpg","after":"b.jpg","labels":["A","B"]}</code></td><td>2 ảnh cùng kích thước, cùng góc</td></tr>
+    <tr><td>Box trên ảnh</td><td><code>{"type":"bbox-overlay","image":"f.jpg","boxes":"f.json"}</code></td><td>Hàm <code>gt_boxes</code> (1.5): <code>{"objects":[{"class","box2d":[x1,y1,x2,y2],"corners2d":[[u,v]×8],"distance_m"}]}</code></td></tr>
+    <tr><td>Point cloud 3D</td><td><code>{"type":"pointcloud","src":["a.ply","b.ply"],"labels":["nóc","cản"],"frame":"carla"}</code></td><td><code>write_ply</code> (1.7), ≤ 5 MB; <code>frame</code>: <code>carla</code> hoặc <code>ros</code></td></tr>
+    <tr><td>Sensor layout</td><td><code>{"type":"sensor-layout","src":"layouts.json"}</code></td><td>File JSON bên dưới — viewer tự tính % phủ và vùng mù</td></tr>
+    <tr><td>Bản đồ</td><td><code>{"type":"map","src":"trace.geojson"}</code></td><td>GeoJSON <code>[lon,lat]</code>; <code>properties.stroke</code>, <code>name</code>, <code>points</code></td></tr>
+    <tr><td>Quỹ đạo</td><td><code>{"type":"trajectory","src":"traj.csv"}</code></td><td>CSV cột <code>t,x_ref,y_ref,x_sim,y_sim</code></td></tr>
+    <tr><td>Biểu đồ</td><td><code>{"type":"chart","src":"d.csv","kind":"line","x":"frame","y":["a","b"],"yLabel":"ms"}</code></td><td>CSV có header; <code>kind</code>: line / bar</td></tr>
+    <tr><td>Log / code</td><td><code>{"type":"log","src":"x.txt"}</code> · <code>{"type":"code","src":"Dockerfile","lang":"dockerfile"}</code></td><td><code>tee</code>, <code>script</code>, file nguồn</td></tr>
+    <tr><td>Link</td><td><code>{"type":"link","href":"https://github.com/.../commit/...","text":"commit"}</code></td><td>—</td></tr>
+  </table></div>
+  <pre data-lang="json"><script type="text/plain">
+    {
+      "vehicle": { "length": 4.6, "width": 1.9 },
+      "range_m": 12,
+      "layouts": [
+        { "name": "Layout A", "sensors": [
+          { "name": "LiDAR nóc", "type": "lidar",  "x": 0.0, "y": 0.0, "z": 2.0, "yaw": 0, "fov": 360, "range": 80, "lower_fov": -30 },
+          { "name": "Cam trước", "type": "camera", "x": 0.8, "y": 0.0, "z": 1.6, "yaw": 0, "fov": 90, "range": 60 },
+          { "name": "Fisheye F", "type": "camera", "x": 2.35, "y": 0.0, "z": 0.6, "yaw": 0, "fov": 180, "vfov": 120, "pitch": -30, "range": 10 },
+          { "name": "Radar F",   "type": "radar",  "x": 2.3, "y": 0.0, "z": 0.5, "yaw": 0, "fov": 30, "range": 100 }
+        ]}
+      ]
+    }
+  </script></pre>
+  <p>Tọa độ theo CARLA (x tới, y phải, mét, yaw độ, dương = quay sang phải). Vùng mù sát xe tính từ chiều cao gắn <code>z</code>, FOV dọc (<code>vfov</code>, hoặc <code>lower_fov</code> cho LiDAR) và <code>pitch</code>; có thể ghi đè bằng <code>min_range</code>.</p>
+
+  <h2 id="ev-safety"><span class="num">E.3</span>An toàn trước khi push (repo public)</h2>
+  <pre data-lang="powershell"><script type="text/plain">
+    # chạy trong thư mục repo — không được ra kết quả nào
+    git diff --cached --name-only | ForEach-Object { Select-String -Path $_ -Pattern '\b10\.\d+\.\d+\.\d+\b','\b\d{1,3}(\.\d{1,3}){3}:\d+\b','BEGIN (OPENSSH|RSA) PRIVATE KEY','password\s*=' -ErrorAction SilentlyContinue }
+  </script></pre>
+  <ul>
+    <li>Ảnh terminal: đặt prompt không lộ user/host trước khi chụp: <code>export PS1='\w $ '</code>.</li>
+    <li>Log: dùng <code>sed -E "s/$(hostname)/&lt;HOST&gt;/g; s/$USER/&lt;USER&gt;/g"</code> như script kiểm kê.</li>
+    <li>Không commit: key, file cấu hình VPN, dataset thật của công ty, ảnh có biển số / mặt người thật.</li>
+    <li>Lỡ push bí mật: <b>đổi mật khẩu/key ngay</b> (xóa khỏi lịch sử Git không đủ — người khác có thể đã tải).</li>
+  </ul>
+
+  <h2><span class="num">E.4</span>Kích thước file</h2>
+  <div class="table-wrap"><table>
+    <tr><th>Loại</th><th>Giới hạn</th><th>Cách giảm</th></tr>
+    <tr><td>Ảnh</td><td>≤ 2 MB</td><td>JPEG quality 85, chiều rộng ≤ 1600 px</td></tr>
+    <tr><td>Video</td><td>≤ 10 MB</td><td><code>-crf 28-32</code>, <code>scale=960:-2</code>, cắt ngắn <code>-t 15</code></td></tr>
+    <tr><td>Point cloud</td><td>≤ 5 MB</td><td>voxel 0.1–0.2 m, bỏ điểm xa &gt; 60 m</td></tr>
+  </table></div>
+</section>
+
+<!-- ============================================================ CHEATSHEET -->
+<section class="tab" id="tab-cheatsheet">
+  <div class="lesson-head">
+    <div class="kicker">TRA CỨU</div>
+    <h1>Cheat sheet</h1>
+  </div>
+  <div class="two">
+    <div><h3>SSH / tmux</h3><pre data-lang="bash"><script type="text/plain">
+      ssh lab4090
+      scp lab4090:~/work/x .\evidence\ID\
+      tmux new -s sim | tmux a -t sim | tmux ls
+      Ctrl+b d  (rời)   Ctrl+b c (cửa sổ mới)
+      Ctrl+b %  "       Ctrl+b [ (cuộn)
+    </script></pre></div>
+    <div><h3>Linux</h3><pre data-lang="bash"><script type="text/plain">
+      nvidia-smi; watch -n1 nvidia-smi
+      df -h; du -sh * | sort -h
+      ss -tlnp | grep 2000
+      ps aux | grep -i carla; kill <PID>
+      tail -f log; grep -n -i -m5 error log
+      cmd 2>&1 | tee -a ~/logs/x.log
+    </script></pre></div>
+    <div><h3>Build CARLA 0.9.16</h3><pre data-lang="bash"><script type="text/plain">
+      # UE4: ./Setup.sh && ./GenerateProjectFiles.sh && make
+      export UE4_ROOT=~/UnrealEngine_4.26
+      ./Update.sh
+      make PythonAPI   # KHÔNG -j$(nproc)
+      make launch | make package | make import
+      make help
+    </script></pre></div>
+    <div><h3>Docker</h3><pre data-lang="bash"><script type="text/plain">
+      docker build -t carla-runtime:0.9.16-self .
+      docker run -d --name carla-$USER --gpus all --net=host carla-runtime:0.9.16-self
+      docker ps; docker logs -f carla-$USER
+      docker exec -it carla-$USER bash
+      docker stop carla-$USER && docker rm carla-$USER
+      docker images; docker system df
+    </script></pre></div>
+    <div><h3>CARLA server / client</h3><pre data-lang="bash"><script type="text/plain">
+      ./CarlaUE4.sh -RenderOffScreen -nosound -carla-rpc-port=2000
+      ./CarlaUE4.sh ... -quality-level=Low
+      ./CarlaUE4.sh ... --ros2
+      pip install carla==0.9.16
+      python PythonAPI/util/config.py --map Town03
+    </script></pre></div>
+    <div><h3>Python API</h3><pre data-lang="python"><script type="text/plain">
+      c = carla.Client("localhost", 2000); c.set_timeout(20)
+      w = c.get_world(); bl = w.get_blueprint_library()
+      s = w.get_settings(); s.synchronous_mode = True
+      s.fixed_delta_seconds = 0.05; w.apply_settings(s)
+      tm = c.get_trafficmanager(8000); tm.set_synchronous_mode(True)
+      a = w.spawn_actor(bp, tf, attach_to=parent)
+      frame = w.tick()
+    </script></pre></div>
+    <div><h3>ROS 2</h3><pre data-lang="bash"><script type="text/plain">
+      source /opt/ros/humble/setup.bash
+      ros2 topic list -t | hz | echo --once | info -v
+      ros2 run tf2_ros tf2_echo base_link lidar
+      ros2 bag record -s mcap -o run01 /clock /tf ...
+      ros2 bag play run01 --clock
+      export ROS_DOMAIN_ID=<n>
+    </script></pre></div>
+    <div><h3>Autoware + CARLA</h3><pre data-lang="bash"><script type="text/plain">
+      ros2 launch autoware_launch e2e_simulator.launch.xml \
+        map_path:=$HOME/autoware_data/maps/Town01 \
+        vehicle_model:=sample_vehicle \
+        sensor_model:=carla_sensor_kit simulator_type:=carla
+      ros2 run autoware_carla_interface spectator_follow
+    </script></pre></div>
+    <div><h3>ffmpeg</h3><pre data-lang="bash"><script type="text/plain">
+      ffmpeg -framerate 20 -pattern_type glob -i 'out/*.png' \
+        -vf scale=960:-2 -c:v libx264 -pix_fmt yuv420p -crf 26 out.mp4
+      ffmpeg -i in.mp4 -ss 5 -t 10 -c copy cut.mp4
+      ffmpeg -i in.mp4 -vf "fps=10,scale=640:-1" out.gif
+    </script></pre></div>
+    <div><h3>Git (Windows)</h3><pre data-lang="powershell"><script type="text/plain">
+      git status; git add evidence\ID data\progress.json
+      git diff --cached --stat
+      git commit -m "progress: ID ..."
+      git push
+      git log --oneline -10
+    </script></pre></div>
+  </div>
+</section>
+
+<!-- ============================================================ GLOSSARY -->
+<section class="tab" id="tab-glossary">
+  <div class="lesson-head">
+    <div class="kicker">TRA CỨU</div>
+    <h1>Thuật ngữ Anh – Việt</h1>
+  </div>
+  <div class="table-wrap"><table>
+    <tr><th>Thuật ngữ</th><th>Nghĩa</th></tr>
+    <tr><td>Actor / Blueprint / Spawn</td><td>Vật thể trong CARLA / "khuôn" để tạo actor (có thuộc tính) / tạo actor vào thế giới</td></tr>
+    <tr><td>Tick / Frame</td><td>Một bước mô phỏng / số thứ tự bước đó (mọi sensor trong 1 tick cùng frame)</td></tr>
+    <tr><td>Synchronous mode / fixed delta</td><td>Server chờ client ra lệnh tick / thời gian mô phỏng cố định mỗi tick</td></tr>
+    <tr><td>Traffic Manager (TM)</td><td>Module điều khiển xe NPC chạy tự động</td></tr>
+    <tr><td>Spectator</td><td>Camera "khán giả" của server (khung nhìn khi xem trực tiếp)</td></tr>
+    <tr><td>Headless / RenderOffScreen</td><td>Chạy không cần màn hình, vẫn render bằng GPU</td></tr>
+    <tr><td>Cook / Package (UE)</td><td>Biên dịch asset sang định dạng chạy / đóng gói bản chạy độc lập</td></tr>
+    <tr><td>Intrinsic / Extrinsic</td><td>Thông số bên trong camera (tiêu cự, tâm ảnh) / vị trí–hướng sensor so với xe</td></tr>
+    <tr><td>FOV / BEV</td><td>Góc nhìn / nhìn từ trên xuống (bird's-eye view)</td></tr>
+    <tr><td>Point cloud / Voxel</td><td>Tập điểm 3D / ô lập phương dùng để giảm mẫu</td></tr>
+    <tr><td>Ground truth (GT)</td><td>Nhãn đúng lấy trực tiếp từ simulator</td></tr>
+    <tr><td>Occlusion / Truncation</td><td>Bị vật khác che / bị cắt ở mép ảnh</td></tr>
+    <tr><td>Coverage / Blind spot</td><td>Vùng sensor nhìn thấy / vùng mù</td></tr>
+    <tr><td>Image / Container / Layer / Volume</td><td>Khuôn Docker / lần chạy / lớp của image / thư mục dữ liệu gắn ngoài</td></tr>
+    <tr><td>ICD (Vulkan)</td><td>File chỉ cho Vulkan loader biết dùng driver GPU nào</td></tr>
+    <tr><td>Node / Topic / QoS / tf</td><td>Process ROS / kênh dữ liệu / chính sách truyền / cây biến đổi tọa độ</td></tr>
+    <tr><td>rosbag / MCAP</td><td>File ghi lại message ROS / định dạng container cho bag</td></tr>
+    <tr><td>NDT</td><td>Thuật toán khớp point cloud với map để định vị</td></tr>
+    <tr><td>Lanelet2</td><td>Định dạng map vector (làn, luật giao thông) Autoware dùng</td></tr>
+    <tr><td>OpenDRIVE (.xodr)</td><td>Chuẩn mô tả mạng đường (hình học, làn, junction)</td></tr>
+    <tr><td>OpenSCENARIO (.xosc)</td><td>Chuẩn mô tả kịch bản động (ai làm gì, khi nào)</td></tr>
+    <tr><td>geoReference / projection</td><td>Chuỗi mô tả cách quy đổi tọa độ map ↔ kinh vĩ độ</td></tr>
+    <tr><td>TTC</td><td>Time-to-collision: thời gian đến va chạm nếu giữ nguyên vận tốc</td></tr>
+    <tr><td>Checkpoint / Evidence</td><td>Mốc năng lực trong khóa học / bằng chứng đã đạt mốc đó</td></tr>
+  </table></div>
+</section>
+
+<!-- ============================================================ MENTOR -->
+<section class="tab" id="tab-mentor">
+  <div class="lesson-head">
+    <div class="kicker">TRA CỨU</div>
+    <h1>Hỏi mentor &amp; dùng chatbot hiệu quả</h1>
+  </div>
+  <h2><span class="num">M.1</span>Câu hỏi nên hỏi mentor ngay ngày đầu</h2>
+  <ol>
+    <li>Team dùng CARLA 0.9.16 tag chính thức hay branch <code>ue4-dev</code> có patch riêng? Đã có bản source build chung chưa (đường dẫn)?</li>
+    <li>Autoware: version/tag nào? Đã chạy được với 0.9.16 chưa, hay đang dùng 0.9.15 / native ROS 2?</li>
+    <li>Quy ước Docker của team: base image, registry nội bộ, cách đặt tên tag.</li>
+    <li>Bên đánh giá dataset yêu cầu format nào (KITTI / nuScenes / OpenLABEL / rosbag), tần số, sensor nào, tiêu chí QA?</li>
+    <li>Xe mục tiêu (kích thước, vị trí sensor thật) để mô phỏng layout đúng?</li>
+    <li>Dữ liệu thật cho Task 3: định dạng GPS, định dạng annotation, hệ tọa độ, tần số?</li>
+    <li>Quy tắc dùng chung server 4090: giờ nào ai dùng GPU, port nào, thư mục nào, <code>ROS_DOMAIN_ID</code> nào?</li>
+    <li>Server có X/VNC có GPU cho UE4 editor chưa? Ai là admin?</li>
+    <li>Asset Blender: ai làm model, có quy chuẩn export chưa?</li>
+    <li>Kết quả nộp ở đâu, định kỳ báo cáo thế nào?</li>
+  </ol>
+
+  <h2><span class="num">M.2</span>Cách hỏi chatbot để được câu trả lời đúng</h2>
+  <ul>
+    <li><b>Luôn ghi version:</b> CARLA 0.9.16 (UE4), Ubuntu 22.04, Python 3.x, ROS 2 Humble, Autoware tag.</li>
+    <li><b>Dán lỗi nguyên văn</b>, lấy dòng lỗi <b>đầu tiên</b> + 20 dòng xung quanh, không tóm tắt.</li>
+    <li><b>Nói đã thử gì</b> để nó không lặp lại gợi ý.</li>
+    <li><b>Yêu cầu lệnh kiểm chứng</b> trước khi sửa, và hỏi "vì sao" — bạn cần hiểu, không chỉ chạy được.</li>
+    <li><b>Nghi ngờ tên hàm/tham số lạ:</b> chatbot hay bịa API. Kiểm tra bằng <code>help(carla.X)</code>, <code>dir()</code>, docs đúng version.</li>
+    <li><b>Không dán bí mật</b> (IP, mật khẩu, key, dữ liệu công ty) vào chatbot.</li>
+  </ul>
+  <h2><span class="num">M.3</span>Prompt mẫu</h2>
+  <div class="prompt"><b>Giải thích khái niệm</b><pre data-lang="text"><script type="text/plain">
+    Giải thích <khái niệm> trong CARLA 0.9.16 cho người biết Python nhưng mới về mô phỏng.
+    Dùng một ví dụ cụ thể, nêu 2 lỗi người mới hay mắc, và 1 bài tập nhỏ để tự kiểm tra.
+  </script></pre></div>
+  <div class="prompt"><b>Review code</b><pre data-lang="text"><script type="text/plain">
+    Review đoạn code thu data CARLA 0.9.16 (sync mode 20 Hz) dưới đây. Tập trung: đồng bộ frame giữa sensor,
+    rò rỉ actor, đổi hệ tọa độ, hiệu năng ghi file. Chỉ ra dòng cụ thể và cách sửa.
+    <dán code>
+  </script></pre></div>
+  <div class="prompt"><b>So sánh phương án</b><pre data-lang="text"><script type="text/plain">
+    Tôi cần <mục tiêu>. Các phương án: A) ..., B) ... Ràng buộc: CARLA 0.9.16, server dùng chung 1 RTX 4090,
+    không có sudo. So sánh theo: công sức, rủi ro, khả năng tái lập. Đề xuất 1 phương án và bước đầu tiên.
+  </script></pre></div>
+  <div class="prompt"><b>Chuẩn bị báo cáo mentor</b><pre data-lang="text"><script type="text/plain">
+    Tóm tắt thành 5 gạch đầu dòng cho mentor: tôi đã làm <...>, kết quả <số liệu>, vướng <...>,
+    đề xuất bước tiếp <...>. Giữ ngắn, có số liệu, không dùng từ mơ hồ.
+  </script></pre></div>
+</section>
+
+  </main>
+</div>
+
+<dialog id="lightbox" class="lightbox"><img alt=""><button class="btn small" id="lbClose">Đóng</button></dialog>
+<script src="assets/viewers.js?v=1"></script>
+<script src="assets/lesson.js?v=1"></script>
+</body>
+</html>

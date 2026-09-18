@@ -1,0 +1,13 @@
+# DEMO — chỉ minh họa cách hiển thị evidence dạng code; bài lab thật ở Module B
+FROM ubuntu:22.04
+ENV DEBIAN_FRONTEND=noninteractive \
+    NVIDIA_DRIVER_CAPABILITIES=all
+RUN apt-get update && apt-get install -y --no-install-recommends \
+      libvulkan1 vulkan-tools libsdl2-2.0-0 libxrandr2 xdg-user-dirs \
+    && rm -rf /var/lib/apt/lists/*
+RUN useradd -m carla
+COPY --chown=carla:carla dist/CARLA_0.9.16/ /home/carla/
+USER carla
+WORKDIR /home/carla
+EXPOSE 2000-2002
+CMD ["bash", "CarlaUE4.sh", "-RenderOffScreen", "-nosound"]

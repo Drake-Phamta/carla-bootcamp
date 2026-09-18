@@ -161,7 +161,7 @@
     },
     {
       "id": "B-03", "module": "B", "day": 1, "required": true,
-      "skill": "Tôi có thể tự viết Dockerfile runtime cho CARLA (user không phải root, RenderOffScreen) từ bản package tự build.",
+      "skill": "Tôi có thể tự viết Dockerfile runtime cho CARLA (user không phải root, RenderOffScreen) — chạy bản release bằng mount, hoặc đóng gói trọn bản tự build.",
       "evidence_required": "Dockerfile + log `docker build` + `docker images` (kích thước).",
       "evidence_types": ["code", "log"],
       "look_for": "Không dùng carlasim/carla; có USER non-root; không copy thừa (dùng .dockerignore).",

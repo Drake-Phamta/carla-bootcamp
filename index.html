@@ -8,8 +8,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/style.css?v=1">
-<link rel="stylesheet" href="assets/lesson.css?v=1">
+<link rel="stylesheet" href="assets/style.css?v=2">
+<link rel="stylesheet" href="assets/lesson.css?v=2">
 <script type="importmap">
 { "imports": {
   "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
@@ -146,7 +146,25 @@
   </ul>
   <div class="callout warn"><p><b>Nói thẳng:</b> 3 ngày đủ để bạn <b>tự vận hành được và biết tìm ở đâu</b>, chưa phải "master". Build UE4 mất nhiều giờ nên phải khởi động ngay tối Ngày 0 và học API song song bằng bản release.</p></div>
 
-  <h2 id="schedule"><span class="num">3</span>Lịch học chi tiết</h2>
+  <h2 id="lab-server"><span class="num">3</span>Server lab thực tế (kiểm kê 18/09) → lịch 3 ngày</h2>
+  <div class="table-wrap"><table>
+    <tr><th>Thực tế</th><th>Hệ quả</th></tr>
+    <tr><td>Ubuntu <b>24.04</b>, <b>không sudo</b>, có nhóm <code>docker</code> + NVIDIA Container Toolkit</td><td>Mọi thứ cần 22.04 (CARLA build, ROS 2 Humble) chạy trong container <code>ubuntu:22.04</code> bạn tự viết</td></tr>
+    <tr><td>RTX 4090 nhưng ~18 GB VRAM đang được người khác dùng</td><td>CARLA chạy <code>-quality-level=Low</code>, ảnh sensor vừa phải; chưa chạy được Autoware cùng lúc</td></tr>
+    <tr><td>RAM 31 GB (đã dùng swap), không có X server</td><td>Build UE4 từ source rủi ro cao, không mở được UE4 editor → học quy trình, làm thật khi đi làm</td></tr>
+    <tr><td>Port 8000 đã bị chiếm</td><td>Traffic Manager dùng port khác: <code>client.get_trafficmanager(8100)</code></td></tr>
+    <tr><td>Thư mục làm việc: <code>~/thanh-carla</code> (disk2, còn nhiều chỗ)</td><td>Chỉ ghi vào đây; không đụng file khác của tài khoản dùng chung</td></tr>
+  </table></div>
+  <div class="table-wrap"><table class="sched">
+    <tr class="blk"><td colspan="3">Lịch ưu tiên cho server lab (3 ngày)</td></tr>
+    <tr><td>Ngày 1</td><td>Docker tự xây chạy CARLA 0.9.16 (bản release) headless → CARLA core: sync, tọa độ, video</td><td>D0, B-01…B-05, C-01…C-04</td></tr>
+    <tr><td>Ngày 2</td><td>Task 1 trọn ngày: sensor, calib, layout/vùng mù, pipeline thu data, GT, KITTI, QA</td><td>T1-01…T1-10</td></tr>
+    <tr><td>Ngày 3</td><td>Sáng ROS 2 (container) + CARLA <code>--ros2</code>; chiều Task 3 (OSM → CARLA, georef, replay, OpenSCENARIO); tối Blender + đọc Autoware &amp; build từ source</td><td>R-01…R-04, T3-01…T3-04, T3-06, T3-08, T3-09, T2-01, T2-04</td></tr>
+    <tr><td>Khi đi làm</td><td>Build UE4/CARLA từ source, import asset, Autoware lái xe, UE5 — trên máy của team</td><td>A-03…A-07, T2-02, T2-03, T3-07, T3-10, U5-01</td></tr>
+  </table></div>
+  <div class="callout warn"><p><b>Quy tắc server dùng chung:</b> luôn <code>nvidia-smi</code> trước khi chạy; tắt CARLA khi không dùng (<code>docker stop</code>); tải file có <code>--limit-rate</code>; job nặng CPU/IO chạy với <code>nice -n 19 ionice -c3</code>; không <code>docker system prune</code> (xóa đồ của người khác).</p></div>
+
+  <h2 id="schedule"><span class="num">4</span>Lịch học tổng quát (máy riêng, đủ tài nguyên)</h2>
   <p class="muted">Nếu bạn chỉ có 18–20/09 trước khi đi làm: Ngày 3 dồn vào tối 20/09 và chỉ làm checkpoint bắt buộc; phần đào sâu làm trong tuần đầu.</p>
   <div class="table-wrap"><table class="sched">
     <tr class="blk"><td colspan="3">Ngày 0 — chiều &amp; tối (≈ 8 h)</td></tr>
@@ -179,7 +197,7 @@
     <tr><td>2 h</td><td>Scenario tổng hợp + review toàn bộ checkpoint</td><td>T3-10</td></tr>
   </table></div>
 
-  <h2><span class="num">4</span>Nguyên tắc làm việc trên server dùng chung</h2>
+  <h2><span class="num">5</span>Nguyên tắc làm việc trên server dùng chung</h2>
   <ol>
     <li><b>Mọi việc dài chạy trong <code>tmux</code></b>, và ghi log: <code>lệnh 2&gt;&amp;1 | tee -a ~/logs/ten.log</code>.</li>
     <li><b>Kiểm tra GPU trước khi chạy</b> (<code>nvidia-smi</code>) — người khác có thể đang dùng. Dùng port riêng nếu 2000 đã bị chiếm.</li>
@@ -622,7 +640,38 @@
   </script></pre>
 
   <h2 id="b-runtime"><span class="num">B.3</span>Dockerfile runtime cho CARLA (bạn tự viết)</h2>
-  <p>Chuẩn bị build context từ bản package tự build ở Module A:</p>
+  <div class="callout ok">
+    <p><b>Trên server lab (dùng bản release 0.9.16, không COPY 20 GB vào image):</b> image chỉ chứa thư viện + user, còn thư mục CARLA được <b>mount</b> lúc chạy → image nhỏ, build vài phút, không tốn thêm ổ của Docker dùng chung.</p>
+    <pre data-lang="dockerfile"><script type="text/plain">
+      # ~/thanh-carla/docker/runtime/Dockerfile
+      FROM ubuntu:22.04
+      ENV DEBIAN_FRONTEND=noninteractive
+      RUN apt-get update && apt-get install -y --no-install-recommends \
+            libsdl2-2.0-0 libvulkan1 libomp5 xdg-user-dirs vulkan-tools \
+          && rm -rf /var/lib/apt/lists/*
+      RUN mkdir -p /etc/vulkan/icd.d && printf '%s\n' \
+        '{"file_format_version":"1.0.0","ICD":{"library_path":"libGLX_nvidia.so.0","api_version":"1.3"}}' \
+        > /etc/vulkan/icd.d/nvidia_icd.json
+      ARG UID=1000
+      RUN useradd -m -u ${UID} carla
+      USER carla
+      WORKDIR /carla
+      ENV NVIDIA_VISIBLE_DEVICES=all NVIDIA_DRIVER_CAPABILITIES=all
+      ENTRYPOINT ["./CarlaUE4.sh"]
+      CMD ["-RenderOffScreen", "-nosound", "-quality-level=Low", "-carla-rpc-port=2000"]
+    </script></pre>
+    <pre data-lang="bash"><script type="text/plain">
+      cd ~/thanh-carla/docker/runtime
+      docker build -t thanh/carla-runtime:0.9.16 --build-arg UID=$(id -u) .
+      nvidia-smi                                   # còn đủ VRAM không?
+      docker run -d --name thanh-carla --gpus all --net=host \
+        -v ~/thanh-carla/carla-0.9.16:/carla thanh/carla-runtime:0.9.16
+      docker logs -f thanh-carla
+      docker stop thanh-carla && docker rm thanh-carla   # khi không dùng
+    </script></pre>
+    <p>Container chạy với <b>cùng UID</b> với bạn (<code>--build-arg UID=$(id -u)</code>) nên ghi được vào thư mục mount (UE4 cần ghi log vào <code>CarlaUE4/Saved</code>). Không mount <code>:ro</code> vì UE4 sẽ lỗi khi không ghi được log.</p>
+  </div>
+  <p><b>Cách "đóng gói trọn" (khi đi làm, để phân phối cho team):</b> COPY bản package tự build ở Module A vào image. Chuẩn bị build context:</p>
   <pre data-lang="bash"><script type="text/plain">
     mkdir -p ~/docker/carla-runtime/CarlaPackage
     PKG=$(dirname "$(find ~/carla/Dist -maxdepth 4 -name CarlaUE4.sh | head -1)")
@@ -851,7 +900,7 @@
     settings.synchronous_mode = True
     settings.fixed_delta_seconds = 0.05            # 20 Hz sim time
     world.apply_settings(settings)
-    tm = client.get_trafficmanager(8000)
+    tm = client.get_trafficmanager(8100)           # server lab: port 8000 đã bị chiếm
     tm.set_synchronous_mode(True)
     tm.set_random_device_seed(42)
     random.seed(42)
@@ -2107,7 +2156,7 @@
 </div>
 
 <dialog id="lightbox" class="lightbox"><img alt=""><button class="btn small" id="lbClose">Đóng</button></dialog>
-<script src="assets/viewers.js?v=1"></script>
-<script src="assets/lesson.js?v=1"></script>
+<script src="assets/viewers.js?v=2"></script>
+<script src="assets/lesson.js?v=2"></script>
 </body>
 </html>
